@@ -1,2 +1,2 @@
 # Pothole-project
-Project for Operative System Laboratory
+Project for Operating System Laboratory
