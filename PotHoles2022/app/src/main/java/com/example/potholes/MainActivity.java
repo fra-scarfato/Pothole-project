@@ -4,6 +4,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.app.Activity;
@@ -15,6 +18,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.widget.Button;
 
+import com.example.potholes.fragments.MainFragment;
 import com.example.potholes.map.MapsActivity;
 
 import java.io.IOException;
@@ -24,33 +28,39 @@ import java.util.Base64;
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
-    private Button apri_mappa;
     //Forse non serve vediamo piu avanti
     public static boolean locationPermissionGranted;
+    MainFragment mainFragment = new MainFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setUpViewComponents();
         locationPermissionGranted = false;
+
         //Appena l'utente apre l'app chiediamo tutti i permessi necessari per usarla
         getPermissions();
-
-        setUpViewComponents();
         setUpListeners();
     }
 
 
-
-
     private void setUpViewComponents() {
-        apri_mappa = findViewById(R.id.apri_mappa);
+        addFragment(mainFragment);
+
+    }
+
+    private void addFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.fragment, fragment);
+        fragmentTransaction.commit();
 
     }
 
     private void setUpListeners() {
         //Apre la mappa
-        apri_mappa.setOnClickListener(view -> {
+       /* apri_mappa.setOnClickListener(view -> {
             //Prima di aprire la mapppa controlliamo se i permessi sono attivati
             if (ContextCompat.checkSelfPermission(
                     this, Manifest.permission.ACCESS_FINE_LOCATION) ==
@@ -61,9 +71,8 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 showPermissionDialog();
             }
-        });
+        });*/
     }
-
 
 
     /*
