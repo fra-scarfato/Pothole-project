@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 
+//TODO:RICHIEDERE ATTIVAZIONE GPS
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
@@ -40,8 +42,7 @@ public class MainActivity extends AppCompatActivity {
         locationPermissionGranted = false;
 
         //Appena l'utente apre l'app chiediamo tutti i permessi necessari per usarla
-        //getPermissions();
-        showPermissionDialog();
+        getPermissions();
         setUpListeners();
     }
 
