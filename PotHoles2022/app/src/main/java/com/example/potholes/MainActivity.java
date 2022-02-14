@@ -40,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
         locationPermissionGranted = false;
 
         //Appena l'utente apre l'app chiediamo tutti i permessi necessari per usarla
-        getPermissions();
+        //getPermissions();
+        showPermissionDialog();
         setUpListeners();
     }
 

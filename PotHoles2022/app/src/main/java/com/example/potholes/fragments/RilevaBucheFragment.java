@@ -21,4 +21,10 @@ public class RilevaBucheFragment extends Fragment {
 
         return inflater.inflate(R.layout.fragment_rileva_buche, container, false);
     }
+
+
+    //TODO:aGGIUNTA METODI PER LA RILEVAZIONE
+
+
+
 }
