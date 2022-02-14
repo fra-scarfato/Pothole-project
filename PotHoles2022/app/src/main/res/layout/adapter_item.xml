@@ -35,18 +35,20 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/adapterItem_latitude_value"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Latitudine"
                     android:textColor="@color/black"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/adapterItem_longitude_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Longitudine"
                     android:textColor="@color/black"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
             </LinearLayout>
         </LinearLayout>
@@ -57,38 +59,36 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/adapterItem_hole_depth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="10dp"
                 android:text="@string/profonditaBuca"
                 android:textColor="@color/black"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginStart="8dp"/>
+                android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/adapterItem_hole_depth_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="4,1 "
+                android:layout_marginLeft="8dp"
+                android:text="4,1 cm"
                 android:textColor="@color/black"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/adapter_item_openMapBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/centimetri"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginEnd="10dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="16dp"
                 android:text="@string/vediSuMappa"
+                android:textAlignment="textEnd"
                 android:textColor="@color/black"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
 
         </LinearLayout>
