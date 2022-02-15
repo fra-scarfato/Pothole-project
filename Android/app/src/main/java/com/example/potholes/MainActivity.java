@@ -13,6 +13,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -20,6 +21,10 @@ import android.widget.Button;
 
 import com.example.potholes.fragments.MainFragment;
 import com.example.potholes.map.MapsActivity;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,6 +49,37 @@ public class MainActivity extends AppCompatActivity {
         //Appena l'utente apre l'app chiediamo tutti i permessi necessari per usarla
         getPermissions();
         setUpListeners();
+        setUpLocationServices();
+    }
+
+    //Configurare le richieste di aggiornamento della posizione
+    private void setUpLocationServices() {
+        LocationRequest mLocationRequest = LocationRequest.create();
+        mLocationRequest.setInterval(60000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        LocationCallback mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                //TODO:Controlli su LocationResult
+                /*public void onLocationResult(LocationResult locationResult) {
+                    if (locationResult == null) {
+                        return;
+                    }
+                    for (Location location : locationResult.getLocations()) {
+                        if (location != null) {
+
+                        }
+                    }
+                }*/
+            }
+        };
+        try {
+            //TODO:Stoppare se non serve (?)
+            LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
     }
 
 
