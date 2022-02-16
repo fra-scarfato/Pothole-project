@@ -1,4 +1,4 @@
-package com.example.potholes;
+package com.example.potholes.utils;
 
 import android.content.Context;
 import android.content.Intent;

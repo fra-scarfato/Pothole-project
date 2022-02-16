@@ -1,4 +1,4 @@
-package com.example.potholes;
+package com.example.potholes.utils;
 
 import android.location.Location;
 

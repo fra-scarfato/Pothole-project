@@ -1,4 +1,4 @@
-package com.example.potholes;
+package com.example.potholes.utils;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.potholes.R;
 import com.example.potholes.fragments.DetectHoleFragment;
 
 import java.io.BufferedReader;
