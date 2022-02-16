@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 //TODO:Login
 
-public class LoginActivity extends AppCompatActivity {
+public class SignOnActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
