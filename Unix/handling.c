@@ -80,7 +80,7 @@ void receiveHole(int client_sd, char buf[])
     //Estrazione degli effettivi dati 
     extractHole(&hole, buf);       // riga 80 "utils.c"
 
-    printf("[#] These are client %d coordinates: Latitude - %f; Longitude - %f. Variations in relation to limit value: %f.\n", client_sd, hole->latitude, hole->longitude, hole->variation);
+    printf("[#] These are client %d coordinates: Latitude: %f; Longitude: %f. Variations in relation to limit value: %f.\n", client_sd, hole->latitude, hole->longitude, hole->variation);
     
     //Impachettare un singolo elemento data contenente i dati estratti
     saveHole(hole);                // riga 119 "utils.c"

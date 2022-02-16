@@ -20,6 +20,11 @@
 #define MAXBUFF 200
 #define LIMIT 2.0
 #define GEO_RADIUS 2.5
+#define DB_USER "fra"
+#define DB_PWD "fra"
+#define DB_NAME "pothole_project"
+#define DB_HOST "localhost"
+#define DB_TABLE "pothole"
 
 struct clientData
 {

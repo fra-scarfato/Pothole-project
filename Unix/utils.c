@@ -132,12 +132,12 @@ void saveHole(clientData *hole)
         fprintf(stderr, "[***] Error! Can't initialize database connection. For more information: %s\n", mysql_error(con)), exit(EXIT_FAILURE);
 
     //Connessione al database
-    if(mysql_real_connect(con, "localhost", "fra", "fra", "pothole_project", 0, NULL, 0) == NULL)
+    if(mysql_real_connect(con, DB_HOST, DB_USER, DB_PWD, DB_NAME, 0, NULL, 0) == NULL)
         mysql_close(con), fprintf(stderr, "[***] Error! Can't connect to database. For more information: %s\n", mysql_error(con)), exit(EXIT_FAILURE);
     printf("[#] Connected to database.\n");
 
     //Preparazione della query
-    sprintf(query, "INSERT INTO pothole VALUES ('fra',%f,%f,%f);", hole->latitude, hole->longitude, hole->variation);
+    sprintf(query, "INSERT INTO %s VALUES ('fra',%f,%f,%f);",DB_TABLE, hole->latitude, hole->longitude, hole->variation);
     
     //Esecuzione della query sul database
     if (mysql_query(con, query))
@@ -191,21 +191,22 @@ void getNearbyHoles(clientData **holes, clientData *position)
     MYSQL *con;
     MYSQL_RES *result;
     MYSQL_ROW row;
-    char username[MAXBUFF], longitude[MAXBUFF], latitude[MAXBUFF], variation[MAXBUFF], json_string[1000] = "{""potholes"":[";
+    char username[MAXBUFF], longitude[MAXBUFF], latitude[MAXBUFF], variation[MAXBUFF], query[MAXBUFF], json_string[1000] = "{""potholes"":[";
     
     //Inizializzazione connessione al database
     if((con = mysql_init(NULL)) == NULL)
         fprintf(stderr, "[***] Error! Can't initialize database connection. For more information: %s\n", mysql_error(con)), exit(EXIT_FAILURE);
 
     //Connessione al database
-    if(mysql_real_connect(con, "localhost", "fra", "fra", "pothole_project", 0, NULL, 0) == NULL)
+    if(mysql_real_connect(con, DB_HOST, DB_USER, DB_PWD, DB_NAME, 0, NULL, 0) == NULL)
         mysql_close(con), fprintf(stderr, "[***] Error! Can't connect to database. For more information: %s\n", mysql_error(con)), exit(EXIT_FAILURE);
     printf("[#] Connected to database.\n");
 
     setvbuf(stdout, NULL, _IONBF, 0);
 
+    sprintf(query,"SELECT * FROM %s", DB_TABLE);
     //Preparazione della query
-    if(mysql_query(con, "SELECT * FROM pothole"))
+    if(mysql_query(con, query))
         fprintf(stderr, "[***] Error! Can't complete the query on the database. For more information: %s\n", mysql_error(con)), mysql_close(con), exit(EXIT_FAILURE);
     
 
