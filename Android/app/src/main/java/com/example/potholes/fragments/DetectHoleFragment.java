@@ -36,7 +36,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 
-public class RilevaBucheFragment extends Fragment {
+public class DetectHoleFragment extends Fragment {
 
 
     private final String IP = "192.168.1.23";
