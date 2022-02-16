@@ -1,15 +1,18 @@
 package com.example.potholes;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.potholes.fragments.DetectHoleFragment;
 import com.example.potholes.fragments.RilevaBucheFragment;
 
 import java.io.BufferedReader;
@@ -29,6 +32,7 @@ public class ReceiveLimitThread implements Runnable{
     private final String IP = "192.168.1.23";
     private final int PORT = 10000;
     private Handler handler;
+    private ProgressDialog dialog;
 
 
     public ReceiveLimitThread(Context context, FragmentActivity activity) {
@@ -61,17 +65,15 @@ public class ReceiveLimitThread implements Runnable{
         handler.post(new Runnable() {
             @Override
             public void run() {
+                dialog.dismiss();
                 //Se la connessione al server è stata effettuata correttamente allora passa a rilevare le buche
                 if(checkConnection) {
                     Toast.makeText(context, "Valore soglia ricevuto: " +limitValue, Toast.LENGTH_LONG).show();
                     Bundle bundle = new Bundle();
                     bundle.putFloat("limit", limitValue);
-                    RilevaBucheFragment rilevaBucheFragment = new RilevaBucheFragment();
-                    rilevaBucheFragment.setArguments(bundle);
-                    FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.fragment, rilevaBucheFragment);
-                    fragmentTransaction.commit();
+                    DetectHoleFragment detectHoleFragment = new DetectHoleFragment();
+                    detectHoleFragment.setArguments(bundle);
+                    addFragment(detectHoleFragment);
                 } else {
                     Toast.makeText(context, "Connessione al server non riuscita.\nRiprova più tardi.", Toast.LENGTH_LONG).show();
                 }
@@ -89,5 +91,12 @@ public class ReceiveLimitThread implements Runnable{
 
     private void passFloat(String st) {
         limitValue = Float.parseFloat(st);
+    }
+
+    private void addFragment(Fragment fragment) {
+        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.fragment, fragment);
+        fragmentTransaction.commit();
     }
 }

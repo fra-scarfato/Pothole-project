@@ -70,6 +70,7 @@ public class DetectHoleFragment extends Fragment {
         sensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         sensorEventListener = new MySensorEventListener(sensorManager, getContext(), limit);
         sensorManager.registerListener(sensorEventListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+        addFragment()
     }
 
 }

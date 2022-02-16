@@ -1,12 +1,14 @@
 package com.example.potholes;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.potholes.entities.Hole;
+import com.example.potholes.fragments.ViewHoleFragment;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -90,7 +92,8 @@ public class ViewHolesThread implements Runnable{
         message = String.copyValueOf(st.toCharArray());
     }
 
-    private void parseJSON() {
+    private ArrayList<Hole> parseJSON() {
+        ArrayList <Hole> holes = null;
         try {
             JSONObject myJSON = new JSONObject(message);
             JSONArray holesJSON = myJSON.getJSONArray("potholes");
@@ -104,6 +107,12 @@ public class ViewHolesThread implements Runnable{
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        return holes;
     }
 
+    private void sendHoleArrayListToViewHoleFragment(Context context,ArrayList<Hole> holes){
+        Intent intent = new Intent(context, ViewHoleFragment.class);
+        intent.putExtra("holes",holes);
+        context.startActivity(intent);
+    }
 }
