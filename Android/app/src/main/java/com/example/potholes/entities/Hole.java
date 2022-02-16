@@ -2,38 +2,48 @@ package com.example.potholes.entities;
 
 public class Hole {
 
-    double latitude;
-    double longitude;
-    double depth;
+    String username;
+    double lat;
+    double lon;
+    double var;
 
 
-    public Hole(double latitude, double longitude, double depth) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.depth = depth;
+    public Hole(String username, double lat, double lon, double depth) {
+        this.username = username;
+        this.lat = lat;
+        this.lon = lon;
+        this.var = var;
     }
 
-    public double getLatitude() {
-        return latitude;
+    public String getUsername() {
+        return username;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public double getLongitude() {
-        return longitude;
+    public double getLat() {
+        return lat;
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    public void setLat(double lat) {
+        this.lat = lat;
     }
 
-    public double getDepth() {
-        return depth;
+    public double getLon() {
+        return lon;
     }
 
-    public void setDepth(double depth) {
-        this.depth = depth;
+    public void setLon(double lon) {
+        this.lon = lon;
+    }
+
+    public double getVar() {
+        return var;
+    }
+
+    public void setVar(double var) {
+        this.var = var;
     }
 }

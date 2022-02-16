@@ -52,7 +52,7 @@ public class RilevaBucheFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        limit = getArguments().getFloat("limit");
         return inflater.inflate(R.layout.fragment_rileva_buche, container, false);
 
 
@@ -78,7 +78,7 @@ public class RilevaBucheFragment extends Fragment {
                             @Override
                             public void onSuccess(Location location) {
                                 currentLocation = location;
-                                sendHolePosition(z-limit,currentLocation);
+                                sendHolePosition((z-limit),currentLocation);
                             }
                         });
                     } catch (SecurityException e) {

@@ -41,9 +41,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void setupHolder(MyViewHolder holder, Hole hole) {
-        holder.latitude.setText(String.valueOf(hole.getLatitude()));
-        holder.longitude.setText(String.valueOf(hole.getLongitude()));
-        holder.depth.setText(String.valueOf(hole.getDepth()));
+        holder.latitude.setText(String.valueOf(hole.getLat()));
+        holder.longitude.setText(String.valueOf(hole.getLon()));
+        holder.depth.setText(String.valueOf(hole.getVar()));
 
     }
 
