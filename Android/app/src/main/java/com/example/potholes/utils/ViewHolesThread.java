@@ -2,12 +2,19 @@ package com.example.potholes.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.example.potholes.R;
 import com.example.potholes.entities.Hole;
+import com.example.potholes.fragments.DetectHoleFragment;
 import com.example.potholes.fragments.ViewHoleFragment;
 import com.google.gson.Gson;
 
@@ -112,8 +119,17 @@ public class ViewHolesThread implements Runnable{
     }
 
     private void sendHoleArrayListToViewHoleFragment(Context context,ArrayList<Hole> holes){
-        Intent intent = new Intent(context, ViewHoleFragment.class);
-        intent.putExtra("holes",holes);
-        context.startActivity(intent);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("holes", holes);
+        ViewHoleFragment viewHoleFragment = new ViewHoleFragment();
+        viewHoleFragment.setArguments(bundle);
+        addFragment(viewHoleFragment);
+    }
+
+    private void addFragment(Fragment fragment) {
+        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.fragment, fragment);
+        fragmentTransaction.commit();
     }
 }

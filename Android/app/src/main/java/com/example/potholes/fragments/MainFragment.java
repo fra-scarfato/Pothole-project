@@ -77,7 +77,7 @@ public class MainFragment extends Fragment {
 
     //Funzione per ricevere il valore soglia
     private void receiveLimit() {
-        Thread rec = new Thread(new ReceiveLimitThread(getContext(), getActivity()));
+        Thread rec = new Thread(new ReceiveLimitThread(getContext(), getActivity(), dialog));
         rec.start();
     }
 

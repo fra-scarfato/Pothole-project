@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -35,11 +36,11 @@ public class ReceiveLimitThread implements Runnable{
     private ProgressDialog dialog;
 
 
-    public ReceiveLimitThread(Context context, FragmentActivity activity) {
+    public ReceiveLimitThread(Context context, FragmentActivity activity, ProgressDialog dialog) {
         this.context = context;
         this.activity = activity;
         handler = new Handler();
-        dialog = new ProgressDialog(this.context);
+        this.dialog = dialog;
     }
 
     @Override
@@ -66,10 +67,11 @@ public class ReceiveLimitThread implements Runnable{
         handler.post(new Runnable() {
             @Override
             public void run() {
-                dialog.dismiss();
+
                 //Se la connessione al server è stata effettuata correttamente allora passa a rilevare le buche
                 if(checkConnection) {
                     Toast.makeText(context, "Valore soglia ricevuto: " +limitValue, Toast.LENGTH_LONG).show();
+                    dialog.dismiss();
                     Bundle bundle = new Bundle();
                     bundle.putFloat("limit", limitValue);
                     DetectHoleFragment detectHoleFragment = new DetectHoleFragment();
