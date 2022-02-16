@@ -34,7 +34,7 @@ public class ViewHolesThread implements Runnable{
     private final int PORT = 10000;
     private Handler handler;
     private String message;
-    private ArrayList<Hole> holes;
+    private ArrayList<Hole> holeArrayList;
 
     public ViewHolesThread(double latitude, double longitude, Context context, FragmentActivity activity) {
         this.latitude = latitude;
@@ -71,8 +71,9 @@ public class ViewHolesThread implements Runnable{
             public void run() {
                 //Se la connessione al server è stata effettuata correttamente allora passa a rilevare le buche
                 if(checkConnection) {
-                    parseJSON();
-                    Toast.makeText(context, "OLEEEE\nUsername:"+holes.get(0).getUsername()+",Lat:"+holes.get(0).getLat()+",Lon:"+holes.get(0).getLon(),Toast.LENGTH_LONG).show();
+                    holeArrayList = parseJSON();
+                    sendHoleArrayListToViewHoleFragment(context,holeArrayList);
+                    Toast.makeText(context, "OLEEEE\nUsername:"+holeArrayList.get(0).getUsername()+",Lat:"+holeArrayList.get(0).getLat()+",Lon:"+holeArrayList.get(0).getLon(),Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(context, "Connessione al server non riuscita.\nRiprova più tardi.", Toast.LENGTH_LONG).show();
                 }
@@ -101,7 +102,7 @@ public class ViewHolesThread implements Runnable{
 
             for (int i = 0; i < size; i++) {
                 JSONObject singleHole = holesJSON.getJSONObject(i);
-                holes = new ArrayList<Hole>(size);
+                holes = new ArrayList<>(size);
                 holes.add(new Gson().fromJson(String.valueOf(singleHole), Hole.class));
             }
         } catch (JSONException e) {

@@ -49,14 +49,6 @@ public class MainFragment extends Fragment {
 
     private Button detect_holes;
     private Button view_holes;
-    private Handler receiveLimitHandler;
-    private final String IP = "20.73.84.69";
-    private final int PORT = 80;
-    private String buffer = new String();
-    boolean checkConnection = false;
-    private float limit;
-    double lat, lon;
-
     private ProgressDialog dialog;
     private ArrayList<Hole> holeArrayList;
     private TextView username;

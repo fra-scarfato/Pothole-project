@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.potholes.fragments.DetectHoleFragment;
-import com.example.potholes.fragments.RilevaBucheFragment;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -39,6 +38,7 @@ public class ReceiveLimitThread implements Runnable{
         this.context = context;
         this.activity = activity;
         handler = new Handler();
+        dialog = new ProgressDialog(this.context);
     }
 
     @Override
