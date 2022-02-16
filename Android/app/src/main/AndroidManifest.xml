@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Potholes">
         <activity
-            android:name=".SignOnActivity"
+            android:name=".HomeActivity"
             android:exported="false" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -37,7 +37,7 @@
             android:exported="false"
             android:label="@string/title_activity_maps" />
         <activity
-            android:name=".MainActivity"
+            android:name=".RegisterActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

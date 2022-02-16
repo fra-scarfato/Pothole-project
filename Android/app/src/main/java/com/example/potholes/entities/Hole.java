@@ -1,6 +1,8 @@
 package com.example.potholes.entities;
 
-public class Hole {
+import java.io.Serializable;
+
+public class Hole implements Serializable {
 
     String username;
     double lat;

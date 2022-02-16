@@ -13,40 +13,36 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.widget.Button;
 
 import com.example.potholes.fragments.MainFragment;
-import com.example.potholes.map.MapsActivity;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Base64;
-
 //TODO:RICHIEDERE ATTIVAZIONE GPS
 
-public class MainActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
     //Forse non serve vediamo piu avanti
     public static boolean locationPermissionGranted;
-    MainFragment mainFragment = new MainFragment();
+    MainFragment mainFragment;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        setUpViewComponents();
+        setContentView(R.layout.activity_home);
+
+        mainFragment = new MainFragment();
         locationPermissionGranted = false;
 
-        //Appena l'utente apre l'app chiediamo tutti i permessi necessari per usarla
+        setUpViewComponents();
         getPermissions();
         setUpListeners();
         setUpLocationServices();
@@ -105,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                     PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
                     this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
                     PackageManager.PERMISSION_GRANTED) {
-                startActivity(new Intent(MainActivity.this, MapsActivity.class));
+                startActivity(new Intent(HomeActivity.this, MapsActivity.class));
             } else {
                 showPermissionDialog();
             }

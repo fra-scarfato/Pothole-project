@@ -40,7 +40,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 
-public class RilevaBucheFragment extends Fragment {
+public class DetectHoleFragment extends Fragment {
 
 
     private final String IP = "20.126.138.164";

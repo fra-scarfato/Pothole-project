@@ -1,12 +1,18 @@
 package com.example.potholes.fragments;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,6 +32,7 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -33,7 +40,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.lang.reflect.Type;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -43,6 +49,19 @@ public class MainFragment extends Fragment {
 
     private Button detect_holes;
     private Button view_holes;
+    private Handler receiveLimitHandler;
+    private final String IP = "20.73.84.69";
+    private final int PORT = 80;
+    private String buffer = new String();
+    boolean checkConnection = false;
+    private float limit;
+    double lat, lon;
+
+    private ProgressDialog dialog;
+    private ArrayList<Hole> holeArrayList;
+    private TextView username;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,8 +74,17 @@ public class MainFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        setUpComponents(view);
         setUpListeners(view);
+    }
+
+
+    private void setUpComponents(View view){
+        holeArrayList = new ArrayList<>();
+        dialog = new ProgressDialog(getContext());
+        username = view.findViewById(R.id.usernameString);
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("user",Context.MODE_PRIVATE);
+        username.setText(sharedPreferences.getString("username",null));
     }
 
     private void setUpListeners(View view) {
@@ -64,6 +92,8 @@ public class MainFragment extends Fragment {
         view_holes = view.findViewById(R.id.vediBucheBtn);
 
         detect_holes.setOnClickListener(v -> {
+            dialog.setMessage("In attesa del valore soglia");
+            dialog.show();
             receiveLimit();
         });
 
