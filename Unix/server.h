@@ -16,15 +16,15 @@
 #include <arpa/inet.h>
 #include <math.h>
 
-#define MYPORT 10000
+#define MYPORT 80
 #define MAXBUFF 200
 #define LIMIT 2.0
 #define GEO_RADIUS 2.5
-#define DB_USER "fra"
-#define DB_PWD "fra"
-#define DB_NAME "pothole_project"
+#define DB_USER "test"
+#define DB_PWD "lso1234"
+#define DB_NAME "pothole"
 #define DB_HOST "localhost"
-#define DB_TABLE "pothole"
+#define DB_TABLE "Hole"
 
 struct clientData
 {
@@ -44,6 +44,7 @@ void receiveHole(int, char []);
 void sendHoles(int, char []);
 
 //FUNZIONI AUSILIARIE GENERICHE "utils.c"
+char* getLogTime();
 //-Funzione di gestione generale delle richieste
 void handleRequest(int, int *, char []);    
 //-Funzioni ausiliarie per ricezione buche

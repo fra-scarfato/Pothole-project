@@ -1,6 +1,25 @@
 #include "server.h"
 
 /*
+FUNZIONE getLogTime:
+- Restituisce l'ora e data corrente
+*/
+char* getLogTime()
+{
+    //Dichiarazione variabili locali
+    char *buffer;
+    time_t now;
+    struct tm* tm_info;
+
+    now = time(NULL);
+    tm_info = localtime(&now);
+    buffer = (char *) malloc(26);
+    strftime(buffer, 26, "%d-%m-%Y %H:%M:%S", tm_info);
+
+    return buffer;
+}
+
+/*
 FUNZIONE handleSignal:
 - Gestisce i signal che arrivano al server
 - Dealloca memoria e chiude il server
@@ -10,11 +29,11 @@ void handleSignal(int signum)
     
     int error_type;
     
-    printf("\n[***] Closing application.\n");
+    printf("\n[***] [%s] Closing application.\n", getLogTime());
     sleep(1);
     if ((error_type = pthread_attr_destroy(&attr)) != 0) 
     {
-        printf("Error! Can't destroy thread attribute. For more information: %s\n", strerror(error_type));
+        fprintf(stderr, "[***] [%s] Error! Can't destroy thread attribute. For more information: %s\n", getLogTime(), strerror(error_type));
         exit(EXIT_FAILURE);
     }
 	exit(EXIT_SUCCESS);
@@ -36,12 +55,12 @@ void handleRequest(int client_sd, int *flag, char buf[])
     
     - 0 -> il client vuole ricevere i valori soglia */
     if(buf[0] == '0')
-        *flag = 0, printf("[#] Client %d request is type 0: client requires limits value.\n", client_sd);
+        *flag = 0, printf("[#] [%s] Client %d request is type 0: client requires limits value.\n", getLogTime(), client_sd);
     
     //- 1 -> il client vuole comunicare la sua posizione e il valore del cambiamento rispetto ai valori soglia
     else if(buf[0] == '1')
     {
-        printf("[#] Client %d request is type 1: client is sending his position beacause has exceeded the limits values.\n", client_sd);
+        printf("[#] [%s] Client %d request is type 1: client is sending his position beacause has exceeded the limits values.\n", getLogTime(), client_sd);
         *flag = 1;
 
         //Ciclo che elimina il primo elemento che indica il tipo di richiesta e salva nello stesso buffer posizione e variazione 
@@ -59,7 +78,7 @@ void handleRequest(int client_sd, int *flag, char buf[])
     else if(buf[0] == '2')
     {
         *flag = 2;
-        printf("[#] Client %d request is type 2: client requires potholes in his zone.\n", client_sd);
+        printf("[#] [%s] Client %d request is type 2: client requires potholes in his zone.\n", getLogTime(), client_sd);
 
         //Ciclo che elimina il primo elemento che indica il tipo di richiesta e salva nello stesso buffer la posizione attuale del client
         while(buf[old_index] != '#')
@@ -74,7 +93,7 @@ void handleRequest(int client_sd, int *flag, char buf[])
     }
     //Caso in cui il messaggio sia corrotto o non formattato correttamente
     else
-        printf("[***] Error! String is not formatted properly\n"), exit(EXIT_FAILURE);
+        fprintf(stderr, "[***] [%s] Error! String is not formatted properly. Try again.\n", getLogTime());
 }
 
 /*
@@ -129,19 +148,19 @@ void saveHole(clientData *hole)
     
     //Inizializzazione connessione al database
     if((con = mysql_init(NULL)) == NULL)
-        fprintf(stderr, "[***] Error! Can't initialize database connection. For more information: %s\n", mysql_error(con)), exit(EXIT_FAILURE);
+        fprintf(stderr, "[***] [%s] Error! Can't initialize database connection. For more information: %s\n", getLogTime(), mysql_error(con)), exit(EXIT_FAILURE);
 
     //Connessione al database
     if(mysql_real_connect(con, DB_HOST, DB_USER, DB_PWD, DB_NAME, 0, NULL, 0) == NULL)
-        mysql_close(con), fprintf(stderr, "[***] Error! Can't connect to database. For more information: %s\n", mysql_error(con)), exit(EXIT_FAILURE);
-    printf("[#] Connected to database.\n");
+        mysql_close(con), fprintf(stderr, "[***] [%s] Error! Can't connect to database. For more information: %s\n", getLogTime(), mysql_error(con)), exit(EXIT_FAILURE);
+    printf("[#] [%s] Connected to database.\n", getLogTime());
 
     //Preparazione della query
     sprintf(query, "INSERT INTO %s VALUES ('fra',%f,%f,%f);",DB_TABLE, hole->latitude, hole->longitude, hole->variation);
     
     //Esecuzione della query sul database
     if (mysql_query(con, query))
-        fprintf(stderr, "[***] Error! Can't complete the query on the database. For more information: %s\n", mysql_error(con)), mysql_close(con), exit(EXIT_FAILURE);
+        fprintf(stderr, "[***] [%s] Error! Can't complete the query on the database. For more information: %s\n", getLogTime(), mysql_error(con)), mysql_close(con), exit(EXIT_FAILURE);
 
     mysql_close(con); 
 }
@@ -195,26 +214,26 @@ void getNearbyHoles(clientData **holes, clientData *position)
     
     //Inizializzazione connessione al database
     if((con = mysql_init(NULL)) == NULL)
-        fprintf(stderr, "[***] Error! Can't initialize database connection. For more information: %s\n", mysql_error(con)), exit(EXIT_FAILURE);
+        fprintf(stderr, "[***] [%s] Error! Can't initialize database connection. For more information: %s\n", getLogTime(), mysql_error(con)), exit(EXIT_FAILURE);
 
     //Connessione al database
     if(mysql_real_connect(con, DB_HOST, DB_USER, DB_PWD, DB_NAME, 0, NULL, 0) == NULL)
-        mysql_close(con), fprintf(stderr, "[***] Error! Can't connect to database. For more information: %s\n", mysql_error(con)), exit(EXIT_FAILURE);
-    printf("[#] Connected to database.\n");
+        mysql_close(con), fprintf(stderr, "[***] [%s] Error! Can't connect to database. For more information: %s\n", getLogTime(), mysql_error(con)), exit(EXIT_FAILURE);
+    printf("[#] [%s] Connected to database.\n", getLogTime());
 
     setvbuf(stdout, NULL, _IONBF, 0);
 
     sprintf(query,"SELECT * FROM %s", DB_TABLE);
     //Preparazione della query
     if(mysql_query(con, query))
-        fprintf(stderr, "[***] Error! Can't complete the query on the database. For more information: %s\n", mysql_error(con)), mysql_close(con), exit(EXIT_FAILURE);
+        fprintf(stderr, "[***] [%s] Error! Can't complete the query on the database. For more information: %s\n", getLogTime(), mysql_error(con)), mysql_close(con), exit(EXIT_FAILURE);
     
 
     //Salvataggio del risultato della query
     if((result = mysql_store_result(con)) == NULL)
-        fprintf(stderr, "[***] Error! Can't store the query result. For more information: %s\n", mysql_error(con)), mysql_close(con), exit(EXIT_FAILURE);
+        fprintf(stderr, "[***] [%s] Error! Can't store the query result. For more information: %s\n", getLogTime(), mysql_error(con)), mysql_close(con), exit(EXIT_FAILURE);
     
-    printf("[#] Query result successfully stored.\n");
+    printf("[#] [%s] Query result successfully stored.\n", getLogTime());
 
     //Impachettamento delle buche nella struct
     while ((row = mysql_fetch_row(result)))

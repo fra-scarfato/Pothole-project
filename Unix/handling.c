@@ -12,7 +12,7 @@ void *handleConnection(void *arg)
     struct timespec ttime;
     
     
-    printf("[#] Thread %d handle client connection %d.\n", (int)pthread_self(), client_sd);    
+    printf("[#] [%s] Thread %d handle client connection %d.\n", getLogTime(), (int)pthread_self(), client_sd);    
     
     //Thread aspetta per ricevere la richiesta del client
     ttime.tv_sec = 1;
@@ -64,7 +64,7 @@ void sendLimit(int client_sd)
     if(write(client_sd, buffer, 4) == -1)
         perror("[***] Error! Can't write on socket. For more information"), exit(EXIT_FAILURE);
     
-    printf("[#] Sent limit value to client %d.\n", client_sd);
+    printf("[#] [%s] Sent limit value to client %d.\n", getLogTime(), client_sd);
 }
 
 /*
@@ -80,12 +80,12 @@ void receiveHole(int client_sd, char buf[])
     //Estrazione degli effettivi dati 
     extractHole(&hole, buf);       // riga 80 "utils.c"
 
-    printf("[#] These are client %d coordinates: Latitude: %f; Longitude: %f. Variations in relation to limit value: %f.\n", client_sd, hole->latitude, hole->longitude, hole->variation);
+    printf("[#] [%s] These are client %d coordinates: Latitude: %f; Longitude: %f. Variations in relation to limit value: %f.\n", getLogTime(), client_sd, hole->latitude, hole->longitude, hole->variation);
     
     //Impachettare un singolo elemento data contenente i dati estratti
     saveHole(hole);                // riga 119 "utils.c"
     
-    printf("[#] Data correctly saved for client %d.\n",client_sd);
+    printf("[#] [%s] Data correctly saved for client %d.\n", getLogTime(), client_sd);
     
     free((void *)hole);
 }
@@ -115,5 +115,5 @@ void sendHoles(int client_sd, char buf[])
     if(write(client_sd, json_string, strlen(json_string)) == -1)
         perror("[***] Error! Can't write on socket. For more information"), exit(EXIT_FAILURE);
     
-    printf("[#] Sent nearby holes to client %d.\n",client_sd);
+    printf("[#] [%s] Sent nearby holes to client %d.\n", getLogTime(), client_sd);
 }

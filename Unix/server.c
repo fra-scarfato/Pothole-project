@@ -26,27 +26,27 @@ int main(int argc, char *argv[]) {
     if((server_sd = socket(AF_INET,SOCK_STREAM,0)) <= 0)
         perror("[***] Error! Can't create socket. For more information"), exit(EXIT_FAILURE);
     
-    printf("[#] Socket created.\n");
+    printf("[#] [%s] Socket created.\n", getLogTime());
 
     //Binding dell'indirizzo alla socket
     if (bind(server_sd, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1)
         perror("[***] Error! Can't bind. For more information"), exit(EXIT_FAILURE);
     
-    printf("[#] Connected to the port.\n");
+    printf("[#] [%s] Connected to the port.\n", getLogTime());
 
     //Server in ascolto
     if(listen(server_sd, 10) == -1)
         perror("[***] Error! Can't listen. For more information"), exit(EXIT_FAILURE);
     
-    printf("[#] Listen to incoming connections.\n");
+    printf("[#] [%s] Listen to incoming connections.\n", getLogTime());
     
     //Inizializzazione attributo per i thread
     if((check_value = pthread_attr_init(&attr)) != 0)
-        fprintf(stderr, "[***] Error! Can't initialize thread attribute. For more information: %s",strerror(check_value)), exit(EXIT_FAILURE);
+        fprintf(stderr, "[***] [%s] Error! Can't initialize thread attribute. For more information: %s", getLogTime(), strerror(check_value)), exit(EXIT_FAILURE);
 
     //Configurazione dell'attributo per i thread (DETACHED STATE)
     if ((check_value = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED)) != 0) 
-        fprintf(stderr,"[***] Error! Can't set detached state. For more information: %s", strerror(check_value)), exit(EXIT_FAILURE);
+        fprintf(stderr,"[***] [%s] Error! Can't set detached state. For more information: %s", getLogTime(), strerror(check_value)), exit(EXIT_FAILURE);
         
     while (1)
     {
@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
             perror("[***] Error! Can't accept connection. For more information"), exit(EXIT_FAILURE);
         
         inet_ntop(AF_INET, &client_addr.sin_addr, client_ip, INET_ADDRSTRLEN);  //Memorizzazione dell'indirizzo del client accettato in formato 0.0.0.0
-        printf("[#] Accepted connection from the server to client %s with socket descriptor %d.\n", client_ip, client_sd);
+        printf("[#] [%s] Accepted connection from the server to client %s with socket descriptor %d.\n", getLogTime(), client_ip, client_sd);
         
         //Inizializzazione del socket descriptor che verrà gestito dal thread
         thread_sd = (int *) malloc(sizeof(int));
@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
         
         //Creazione dei thread per gestire ogni client connesso
         if((check_value = pthread_create(&tid, &attr, handleConnection, (void *)thread_sd)) != 0)
-            fprintf(stderr,"[***] Error! Can't create thread. For more information: %s",strerror(check_value)), exit(EXIT_FAILURE);   
+            fprintf(stderr,"[***] [%s] Error! Can't create thread. For more information: %s", getLogTime(), strerror(check_value)), exit(EXIT_FAILURE);   
     }
 
     //Deallocazione memoria
