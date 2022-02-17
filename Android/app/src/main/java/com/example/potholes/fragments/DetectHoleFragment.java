@@ -1,38 +1,57 @@
 package com.example.potholes.fragments;
 
-import android.content.Context;
 import android.hardware.Sensor;
+import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.potholes.utils.MySensorEventListener;
+import com.example.potholes.adapter.RecyclerViewAdapter;
+import com.example.potholes.entities.Hole;
 import com.example.potholes.R;
+import com.example.potholes.utils.SendHoleThread;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCanceledListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+
+import java.util.ArrayList;
 
 
-public class DetectHoleFragment extends Fragment {
+public class DetectHoleFragment extends Fragment implements SensorEventListener {
 
-
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2;
+    private ArrayList<Hole> holeArrayList;
+    private Location currentLocation;
     private final String IP = "20.126.138.164";
     private final int PORT = 80;
     private SensorManager sensorManager;
-    private SensorEventListener sensorEventListener;
     private float limit;
     private String buffer = new String();
-    boolean checkConnection = false;
+    private boolean checkConnection = false;
+    private Hole hole;
+
+    private RecyclerView recyclerView;
+    private RecyclerViewAdapter recyclerViewAdapter;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        limit = getArguments().getFloat("limit");
-        return inflater.inflate(R.layout.fragment_rileva_buche, container, false);
+
+        return inflater.inflate(R.layout.fragment_detect_hole, container, false);
 
 
     }
@@ -41,12 +60,79 @@ public class DetectHoleFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupComponents();
+        setUpViewComponents(view);
+
+
     }
 
     private void setupComponents() {
-        sensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
-        sensorEventListener = new MySensorEventListener(sensorManager, getContext(), limit);
-        sensorManager.registerListener(sensorEventListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+        holeArrayList = new ArrayList<>();
+        limit = getArguments().getFloat("limit");
+        sensorManager = (SensorManager) getContext().getSystemService(getActivity().SENSOR_SERVICE);
+        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
     }
+
+    //TODO:iL Recycler non va
+    private void setUpViewComponents(View view ) {
+        recyclerView = view.findViewById(R.id.fragmentDetectHole_RecyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        float z = sensorEvent.values[2];
+        if (z > limit) {
+            try {
+                sensorManager.unregisterListener(this);
+                Task<Location> taskLocation = LocationServices.getFusedLocationProviderClient(getContext()).getLastLocation();
+                taskLocation.addOnCompleteListener(task -> {
+                    currentLocation = task.getResult();
+                    if (currentLocation != null){
+                        sendHolePosition((z - limit), currentLocation);
+                        //TODO:Passare l'username con le shared preferences
+                        hole = new Hole("username",currentLocation.getLatitude(),currentLocation.getLongitude(),z-limit);
+                        holeArrayList.add(hole);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                recyclerViewAdapter = new RecyclerViewAdapter(getActivity(),holeArrayList);
+                                recyclerView.setAdapter(recyclerViewAdapter);
+                            }
+                        });
+
+
+                    }else{
+                        Toast.makeText(getContext(), "Location null", Toast.LENGTH_SHORT).show();
+                    }
+
+                });
+
+
+
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+
+    private void sendHolePosition(float variation, Location currentLocation) {
+        if (currentLocation != null) {
+            Thread rec = new Thread(new SendHoleThread(currentLocation, variation));
+            rec.start();
+        } else {
+            //TODO:RICHIESTA GPS
+        }
+    }
+
+
+
+
 
 }

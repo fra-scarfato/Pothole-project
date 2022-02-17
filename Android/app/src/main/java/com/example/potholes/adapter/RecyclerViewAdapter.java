@@ -43,7 +43,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private void setupHolder(MyViewHolder holder, Hole hole) {
         holder.latitude.setText(String.valueOf(hole.getLat()));
         holder.longitude.setText(String.valueOf(hole.getLon()));
-        holder.depth.setText(String.valueOf(hole.getVar()));
+        holder.variation.setText(String.valueOf(hole.getVar()));
 
     }
 
@@ -84,9 +84,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
 
-    public /*static */ class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView latitude, longitude, depth;
+        TextView latitude, longitude, variation;
         Button open_map;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -94,7 +94,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             latitude = itemView.findViewById(R.id.adapterItem_latitude_value);
             longitude = itemView.findViewById(R.id.adapterItem_longitude_value);
-            depth = itemView.findViewById(R.id.adapterItem_hole_depth_value);
+            variation = itemView.findViewById(R.id.adapterItem_hole_depth_value);
             open_map = itemView.findViewById(R.id.adapter_item_openMapBtn);
 
 

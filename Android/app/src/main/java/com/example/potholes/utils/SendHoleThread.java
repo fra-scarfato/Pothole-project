@@ -9,8 +9,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class SendHoleThread implements Runnable{
-    private final String IP = "192.168.1.23";
-    private final int PORT = 10000;
+    private final String IP = "20.73.84.69";
+    private final int PORT = 80;
     private final Location location;
     private final float variation;
 
