@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.potholes.adapter.RecyclerViewAdapter;
+
 import com.example.potholes.entities.Hole;
 import com.example.potholes.R;
 import com.example.potholes.utils.SendHoleThread;
@@ -44,7 +44,7 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
     private Hole hole;
 
     private RecyclerView recyclerView;
-    private RecyclerViewAdapter recyclerViewAdapter;
+
 
 
     @Override
@@ -93,13 +93,7 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
                         //TODO:Passare l'username con le shared preferences
                         hole = new Hole("username",currentLocation.getLatitude(),currentLocation.getLongitude(),z-limit);
                         holeArrayList.add(hole);
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                recyclerViewAdapter = new RecyclerViewAdapter(getActivity(),holeArrayList);
-                                recyclerView.setAdapter(recyclerViewAdapter);
-                            }
-                        });
+                        //todo adapter
 
 
                     }else{

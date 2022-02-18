@@ -5,6 +5,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.Manifest;
 import android.app.Activity;
@@ -18,6 +19,9 @@ import android.provider.Settings;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import www.sanju.motiontoast.MotionToast;
+import www.sanju.motiontoast.MotionToastStyle;
 
 //TODO:Login
 
@@ -50,7 +54,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        
+
         getPermissions();
 
         sharedPreferences = RegisterActivity.this.getSharedPreferences("user", MODE_PRIVATE);
@@ -86,15 +90,25 @@ public class RegisterActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("username", username.getText().toString());
                     editor.apply();
-                    startActivity(new Intent(RegisterActivity.this, HomeActivity.class));
+                    Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
 
                 } else {
                     //L'utente nn ha inserito un username
-                    Toast.makeText(RegisterActivity.this, "Inserisci lo username", Toast.LENGTH_SHORT).show();
+                    MotionToast.Companion.darkToast(RegisterActivity.this,"Errore","Inserire uno username",MotionToastStyle.ERROR,MotionToast.GRAVITY_BOTTOM, MotionToast.SHORT_DURATION, ResourcesCompat.getFont(RegisterActivity.this,R.font.helveticabold));
+
                 }
 
             } else {
-                  showPermissionDialog();
+                if (!username.getText().toString().isEmpty()) {
+                    showPermissionDialog();
+
+                } else {
+                    //L'utente nn ha inserito un username
+                    MotionToast.Companion.darkToast(RegisterActivity.this,"Errore","Inserire uno username",MotionToastStyle.ERROR,MotionToast.GRAVITY_BOTTOM, MotionToast.SHORT_DURATION, ResourcesCompat.getFont(RegisterActivity.this,R.font.helveticabold));
+                }
+
             }
         });
 

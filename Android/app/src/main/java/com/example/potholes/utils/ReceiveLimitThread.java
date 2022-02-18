@@ -8,12 +8,14 @@ import android.os.Handler;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.potholes.R;
+import com.example.potholes.RegisterActivity;
 import com.example.potholes.fragments.DetectHoleFragment;
 
 import java.io.BufferedReader;
@@ -24,6 +26,9 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+
+import www.sanju.motiontoast.MotionToast;
+import www.sanju.motiontoast.MotionToastStyle;
 
 public class ReceiveLimitThread implements Runnable{
     private boolean checkConnection = false;
@@ -70,7 +75,8 @@ public class ReceiveLimitThread implements Runnable{
 
                 //Se la connessione al server è stata effettuata correttamente allora passa a rilevare le buche
                 if(checkConnection) {
-                    Toast.makeText(context, "Valore soglia ricevuto: " +limitValue, Toast.LENGTH_LONG).show();
+                    MotionToast.Companion.darkToast(activity, "","Soglia ricevuta: "+limitValue, MotionToastStyle.SUCCESS,MotionToast.GRAVITY_BOTTOM, MotionToast.LONG_DURATION, ResourcesCompat.getFont(context, R.font.helveticabold));
+
                     dialog.dismiss();
                     Bundle bundle = new Bundle();
                     bundle.putFloat("limit", limitValue);
@@ -78,7 +84,9 @@ public class ReceiveLimitThread implements Runnable{
                     detectHoleFragment.setArguments(bundle);
                     addFragment(detectHoleFragment);
                 } else {
-                    Toast.makeText(context, "Connessione al server non riuscita.\nRiprova più tardi.", Toast.LENGTH_LONG).show();
+                    dialog.dismiss();
+                    MotionToast.Companion.darkToast(activity, "Errore","Connessione al server non riuscita.\nRiprova più tardi.", MotionToastStyle.ERROR,MotionToast.GRAVITY_BOTTOM, MotionToast.LONG_DURATION, ResourcesCompat.getFont(context, R.font.helveticabold));
+
                 }
             }
         });

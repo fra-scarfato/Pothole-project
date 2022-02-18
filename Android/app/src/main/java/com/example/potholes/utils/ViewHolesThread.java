@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.widget.Toast;
 
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -31,6 +32,9 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+
+import www.sanju.motiontoast.MotionToast;
+import www.sanju.motiontoast.MotionToastStyle;
 
 public class ViewHolesThread implements Runnable{
     private boolean checkConnection = false;
@@ -80,9 +84,11 @@ public class ViewHolesThread implements Runnable{
                 if(checkConnection) {
                     holeArrayList = parseJSON();
                     sendHoleArrayListToViewHoleFragment(context,holeArrayList);
+                    //TODO:Cambiare
                     Toast.makeText(context, "OLEEEE\nUsername:"+holeArrayList.get(0).getUsername()+",Lat:"+holeArrayList.get(0).getLat()+",Lon:"+holeArrayList.get(0).getLon(),Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(context, "Connessione al server non riuscita.\nRiprova più tardi.", Toast.LENGTH_LONG).show();
+                    MotionToast.Companion.darkToast(activity, "Errore","Connessione al server non riuscita.\nRiprova più tardi.", MotionToastStyle.ERROR,MotionToast.GRAVITY_BOTTOM, MotionToast.LONG_DURATION, ResourcesCompat.getFont(context, R.font.helveticabold));
+
                 }
             }
         });

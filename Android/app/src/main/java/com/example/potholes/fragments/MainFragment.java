@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -63,9 +64,7 @@ public class MainFragment extends Fragment {
         locationManager = (LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE);
         holeArrayList = new ArrayList<>();
         dialog = new ProgressDialog(getContext());
-        username = view.findViewById(R.id.usernameString);
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
-        username.setText(sharedPreferences.getString("username", null));
+
     }
 
     private void setUpListeners(View view) {

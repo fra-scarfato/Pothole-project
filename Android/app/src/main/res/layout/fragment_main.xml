@@ -9,50 +9,31 @@
     android:foregroundGravity="center_horizontal"
     tools:context=".MainFragment">
 
-    <TextView
-        android:id="@+id/bentornatoString"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/benvenuto"
-        android:textColor="@color/orange"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/usernameString"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/orange"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bentornatoString" />
-
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/rilevaBtn"
         android:layout_width="190dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="66dp"
+        android:layout_marginTop="148dp"
         android:background="@drawable/btn_background"
         android:text="@string/rilevaBucheBtn"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/usernameString"
-        android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/vediBucheBtn"
         android:layout_width="190dp"
         android:layout_height="wrap_content"
-        android:id="@+id/vediBucheBtn"
+        android:layout_marginTop="32dp"
         android:background="@drawable/btn_background"
         android:text="@string/visualizzaBucheBtn"
-        app:layout_constraintStart_toStartOf="@id/rilevaBtn"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
         app:layout_constraintEnd_toEndOf="@id/rilevaBtn"
-        app:layout_constraintTop_toBottomOf="@id/rilevaBtn"
-        android:layout_marginTop="10dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"/>
+        app:layout_constraintStart_toStartOf="@id/rilevaBtn"
+        app:layout_constraintTop_toBottomOf="@id/rilevaBtn" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

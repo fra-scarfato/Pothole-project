@@ -2,8 +2,10 @@ package com.example.potholes;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -12,6 +14,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,13 +26,18 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
+import www.sanju.motiontoast.MotionToast;
+import www.sanju.motiontoast.MotionToastStyle;
+
 //TODO:RICHIEDERE ATTIVAZIONE GPS
 
 public class HomeActivity extends AppCompatActivity {
 
 
 
-    MainFragment mainFragment;
+    private MainFragment mainFragment;
+    private String username;
+    private SharedPreferences sharedPreferences;
 
 
 
@@ -37,12 +45,21 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
+        sharedPreferences = HomeActivity.this.getSharedPreferences("user",MODE_PRIVATE);
+        username = sharedPreferences.getString("username",null);
         mainFragment = new MainFragment();
 
         setUpViewComponents();
         setUpListeners();
         setUpLocationServices();
+
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        MotionToast.Companion.darkToast(HomeActivity.this,"","Bentornato "+ username, MotionToastStyle.SUCCESS,MotionToast.GRAVITY_BOTTOM, MotionToast.LONG_DURATION, ResourcesCompat.getFont(HomeActivity.this,R.font.helveticabold));
+
     }
 
     //Configurare le richieste di aggiornamento della posizione
@@ -78,6 +95,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void setUpViewComponents() {
         addFragment(mainFragment);
+
 
     }
 
