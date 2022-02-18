@@ -107,7 +107,9 @@ public class ReceiveLimitThread implements Runnable{
     private void addFragment(Fragment fragment) {
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragment, fragment);
+        fragmentTransaction.add(R.id.fragment, fragment,"DetectHole");
+        //TODO:backstack aggiunto
+        fragmentTransaction.addToBackStack("DetectHole");
         fragmentTransaction.commit();
     }
 }

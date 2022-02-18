@@ -15,10 +15,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.example.potholes.adapter.RecyclerAdapter;
 import com.example.potholes.entities.Hole;
 import com.example.potholes.R;
 import com.example.potholes.utils.SendHoleThread;
@@ -72,9 +74,9 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    //TODO:iL Recycler non va
+
     private void setUpViewComponents(View view ) {
-        recyclerView = view.findViewById(R.id.fragmentDetectHole_RecyclerView);
+        recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
@@ -94,7 +96,9 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
                         hole = new Hole("username",currentLocation.getLatitude(),currentLocation.getLongitude(),z-limit);
                         holeArrayList.add(hole);
                         //todo adapter
-
+                        RecyclerAdapter recyclerAdapter = new RecyclerAdapter(holeArrayList);
+                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                        recyclerView.setAdapter(recyclerAdapter);
 
                     }else{
                         Toast.makeText(getContext(), "Location null", Toast.LENGTH_SHORT).show();
