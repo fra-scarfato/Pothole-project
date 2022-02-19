@@ -22,17 +22,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        private TextView lat;
-        private TextView longitude;
-        private TextView username;
-        private TextView variation;
+        private TextView indirizzo;
+        private TextView valore_variazione;
+
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            lat = itemView.findViewById(R.id.latitude);
-            longitude = itemView.findViewById(R.id.longitude);
-            username = itemView.findViewById(R.id.username);
-            variation = itemView.findViewById(R.id.variation);
+            indirizzo = itemView.findViewById(R.id.indirizzo);
+            valore_variazione = itemView.findViewById(R.id.variazione);
+
         }
     }
 
@@ -46,15 +44,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        String username = holeArrayList.get(position).getUsername();
-        String latitude = String.valueOf(holeArrayList.get(position).getLat());
-        String longitude = String.valueOf(holeArrayList.get(position).getLon());
-        String variation = String.valueOf(holeArrayList.get(position).getVar());
+        String indirizzo = holeArrayList.get(position).getIndirizzo();
+        String valore_variazione = String.valueOf(holeArrayList.get(position).getValore_variazione());
 
-        holder.username.setText(username);
-        holder.lat.setText(latitude);
-        holder.longitude.setText(longitude);
-        holder.variation.setText(variation);
+        holder.indirizzo.setText(indirizzo);
+        holder.valore_variazione.setText(valore_variazione);
     }
 
     @Override

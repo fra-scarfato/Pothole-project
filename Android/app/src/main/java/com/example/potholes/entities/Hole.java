@@ -4,25 +4,25 @@ import java.io.Serializable;
 
 public class Hole implements Serializable {
 
-    String username;
+    String indirizzo;
     double lat;
     double lon;
-    double var;
+    double valore_variazione;
 
 
-    public Hole(String username, double lat, double lon, double depth) {
-        this.username = username;
+    public Hole(String indirizzo, double lat, double lon, double valore_variazione) {
+        this.indirizzo = indirizzo;
         this.lat = lat;
         this.lon = lon;
-        this.var = var;
+        this.valore_variazione = valore_variazione;
     }
 
-    public String getUsername() {
-        return username;
+    public String getIndirizzo() {
+        return indirizzo;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setIndirizzo(String indirizzo) {
+        this.indirizzo = indirizzo;
     }
 
     public double getLat() {
@@ -41,11 +41,11 @@ public class Hole implements Serializable {
         this.lon = lon;
     }
 
-    public double getVar() {
-        return var;
+    public double getValore_variazione() {
+        return valore_variazione;
     }
 
-    public void setVar(double var) {
-        this.var = var;
+    public void setValore_variazione(double indirizzo) {
+        this.valore_variazione = valore_variazione;
     }
 }
