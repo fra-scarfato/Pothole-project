@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.potholes.R;
 import com.example.potholes.entities.Hole;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
@@ -22,14 +23,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        private TextView indirizzo;
-        private TextView valore_variazione;
+        private TextView address;
+        private TextView variation;
 
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            indirizzo = itemView.findViewById(R.id.indirizzo);
-            valore_variazione = itemView.findViewById(R.id.variazione);
+            address = itemView.findViewById(R.id.address);
+            variation = itemView.findViewById(R.id.variation);
 
         }
     }
@@ -44,11 +45,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        String indirizzo = holeArrayList.get(position).getIndirizzo();
-        String valore_variazione = String.valueOf(holeArrayList.get(position).getValore_variazione());
+        String address = holeArrayList.get(position).getAddress();
+        Double variation = holeArrayList.get(position).getVariation();
 
-        holder.indirizzo.setText(indirizzo);
-        holder.valore_variazione.setText(valore_variazione);
+        holder.address.setText(address);
+        holder.variation.setText(new DecimalFormat("#.####").format(variation));
     }
 
     @Override

@@ -58,13 +58,14 @@ public class RegisterActivity extends AppCompatActivity {
         getPermissions();
 
         sharedPreferences = RegisterActivity.this.getSharedPreferences("user", MODE_PRIVATE);
-        if (sharedPreferences.getString("username", null) == null) {
-            setUpViewComponents();
-            setListeners();
-        } else {
+        if (sharedPreferences.getString("username", null) != null) {
             Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
+
+        } else {
+            setUpViewComponents();
+            setListeners();
 
         }
 
@@ -96,7 +97,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 } else {
                     //L'utente nn ha inserito un username
-                    MotionToast.Companion.darkToast(RegisterActivity.this,"Errore","Inserire uno username",MotionToastStyle.ERROR,MotionToast.GRAVITY_BOTTOM, MotionToast.SHORT_DURATION, ResourcesCompat.getFont(RegisterActivity.this,R.font.helveticabold));
+                    MotionToast.Companion.darkToast(RegisterActivity.this, "Errore", "Inserire uno username", MotionToastStyle.ERROR, MotionToast.GRAVITY_BOTTOM, MotionToast.SHORT_DURATION, ResourcesCompat.getFont(RegisterActivity.this, R.font.helveticabold));
 
                 }
 
@@ -106,7 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 } else {
                     //L'utente nn ha inserito un username
-                    MotionToast.Companion.darkToast(RegisterActivity.this,"Errore","Inserire uno username",MotionToastStyle.ERROR,MotionToast.GRAVITY_BOTTOM, MotionToast.SHORT_DURATION, ResourcesCompat.getFont(RegisterActivity.this,R.font.helveticabold));
+                    MotionToast.Companion.darkToast(RegisterActivity.this, "Errore", "Inserire uno username", MotionToastStyle.ERROR, MotionToast.GRAVITY_BOTTOM, MotionToast.SHORT_DURATION, ResourcesCompat.getFont(RegisterActivity.this, R.font.helveticabold));
                 }
 
             }

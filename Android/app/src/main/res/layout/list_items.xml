@@ -2,8 +2,10 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:backgroundTint="@color/black">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,43 +19,60 @@
 
 
         <TextView
-            app:layout_constraintStart_toStartOf="parent"
-            android:id="@+id/indirizzo"
+            android:id="@+id/address3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Via dalle palle, 30"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:paddingStart="16sp"
-            android:textSize="16sp"
-            android:textStyle="normal"/>
-
-        <TextView
-            app:layout_constraintEnd_toEndOf="parent"
-            android:id="@+id/valore_variazione"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="n cm"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:paddingEnd="16sp"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
-
-
-        <TextView
-            app:layout_constraintEnd_toStartOf="@id/valore_variazione"
-            android:id="@+id/variazione"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
             android:text="Variazione:"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:paddingEnd="8sp"
+            android:textAlignment="textStart"
             android:textSize="16sp"
-            android:textStyle="normal"/>
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/address2" />
 
+        <TextView
+            android:id="@+id/address2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:text="Indirizzo:"
+            android:textAlignment="textStart"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:text="Via napoli"
+            android:textAlignment="textStart"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toTopOf="@+id/variation"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/address2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.051" />
+
+        <TextView
+            android:id="@+id/variation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:paddingEnd="8sp"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:layout_constraintBaseline_toBaselineOf="@+id/address3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/address3" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

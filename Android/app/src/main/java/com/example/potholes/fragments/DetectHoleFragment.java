@@ -4,6 +4,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,7 +31,10 @@ import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 
 public class DetectHoleFragment extends Fragment implements SensorEventListener {
@@ -46,13 +51,14 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
     private Hole hole;
 
     private RecyclerView recyclerView;
-
+    private Geocoder geocoder;
+    private List<Address> addresses;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        geocoder = new Geocoder(getContext(), Locale.ITALY);
         return inflater.inflate(R.layout.fragment_detect_hole, container, false);
 
 
@@ -75,7 +81,7 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
     }
 
 
-    private void setUpViewComponents(View view ) {
+    private void setUpViewComponents(View view) {
         recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -86,31 +92,39 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
         float z = sensorEvent.values[2];
         if (z > limit) {
             try {
-                sensorManager.unregisterListener(this);
+
                 Task<Location> taskLocation = LocationServices.getFusedLocationProviderClient(getContext()).getLastLocation();
                 taskLocation.addOnCompleteListener(task -> {
+                    //sensorManager.unregisterListener(this);
                     currentLocation = task.getResult();
-                    if (currentLocation != null){
+                    if (currentLocation != null) {
                         sendHolePosition((z - limit), currentLocation);
-                        //TODO:Passare l'username con le shared preferences
-                        hole = new Hole("username",currentLocation.getLatitude(),currentLocation.getLongitude(),z-limit);
+
+                        try {
+                            addresses = geocoder.getFromLocation(currentLocation.getLatitude(),currentLocation.getLongitude(),1);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        hole = new Hole(addresses.get(0).getAddressLine(0), z - limit);
                         holeArrayList.add(hole);
-                        //todo adapter
+                        Log.e("Address Line", addresses.get(0).getAddressLine(0));
                         RecyclerAdapter recyclerAdapter = new RecyclerAdapter(holeArrayList);
                         recyclerView.setItemAnimator(new DefaultItemAnimator());
                         recyclerView.setAdapter(recyclerAdapter);
 
-                    }else{
+                    } else {
                         Toast.makeText(getContext(), "Location null", Toast.LENGTH_SHORT).show();
                     }
 
                 });
 
 
-
             } catch (SecurityException e) {
                 e.printStackTrace();
             }
+
+
         }
     }
 
@@ -128,9 +142,6 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
             //TODO:RICHIESTA GPS
         }
     }
-
-
-
 
 
 }

@@ -1,10 +1,8 @@
 package com.example.potholes.utils;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.widget.Toast;
 
 import androidx.core.content.res.ResourcesCompat;
@@ -15,7 +13,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.potholes.R;
 import com.example.potholes.entities.Hole;
-import com.example.potholes.fragments.DetectHoleFragment;
 import com.example.potholes.fragments.ViewHoleFragment;
 import com.google.gson.Gson;
 
@@ -85,7 +82,7 @@ public class ViewHolesThread implements Runnable{
                     holeArrayList = parseJSON();
                     sendHoleArrayListToViewHoleFragment(context,holeArrayList);
                     //TODO:Cambiare
-                    Toast.makeText(context, "OLEEEE\nUsername:"+holeArrayList.get(0).getIndirizzo()+",Lat:"+holeArrayList.get(0).getLat()+",Lon:"+holeArrayList.get(0).getLon(),Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "OLEEEE\nUsername:"+holeArrayList.get(0).getAddress()+",Lat:"+holeArrayList.get(0).getLat()+",Lon:"+holeArrayList.get(0).getLon(),Toast.LENGTH_LONG).show();
                 } else {
                     MotionToast.Companion.darkToast(activity, "Errore","Connessione al server non riuscita.\nRiprova più tardi.", MotionToastStyle.ERROR,MotionToast.GRAVITY_BOTTOM, MotionToast.LONG_DURATION, ResourcesCompat.getFont(context, R.font.helveticabold));
 
