@@ -19,7 +19,7 @@
 
 
         <TextView
-            android:id="@+id/address3"
+            android:id="@+id/variation_string"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -29,10 +29,10 @@
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/address2" />
+            app:layout_constraintTop_toBottomOf="@+id/address_string" />
 
         <TextView
-            android:id="@+id/address2"
+            android:id="@+id/address_string"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -45,7 +45,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/address"
+            android:id="@+id/address_value"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -54,25 +54,25 @@
             android:textAlignment="textStart"
             android:textSize="14sp"
             android:textStyle="normal"
-            app:layout_constraintBottom_toTopOf="@+id/variation"
+            app:layout_constraintBottom_toTopOf="@+id/variation_value"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/address2"
+            app:layout_constraintStart_toEndOf="@+id/address_string"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.051" />
 
         <TextView
-            android:id="@+id/variation"
+            android:id="@+id/variation_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:paddingEnd="8sp"
             android:textSize="14sp"
             android:textStyle="normal"
-            app:layout_constraintBaseline_toBaselineOf="@+id/address3"
+            app:layout_constraintBaseline_toBaselineOf="@+id/variation_string"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/address3" />
+            app:layout_constraintStart_toEndOf="@+id/variation_string" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

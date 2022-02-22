@@ -29,8 +29,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            address = itemView.findViewById(R.id.address);
-            variation = itemView.findViewById(R.id.variation);
+            address = itemView.findViewById(R.id.address_value);
+            variation = itemView.findViewById(R.id.variation_value);
 
         }
     }

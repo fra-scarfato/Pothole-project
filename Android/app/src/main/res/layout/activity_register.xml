@@ -24,7 +24,7 @@
         android:layout_marginTop="68dp"
         android:foreground="@drawable/ruota"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.578"
+        app:layout_constraintHorizontal_bias="0.62"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -65,13 +65,9 @@
         app:layout_constraintStart_toStartOf="@id/pothString"
         app:layout_constraintTop_toTopOf="@id/ruota" />
 
-    <FrameLayout
-        android:id="@+id/fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/detectorString" />
+
+
+
 
     <EditText
         android:id="@+id/username_editText"
