@@ -20,23 +20,27 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.potholes.HomeActivity;
 import com.example.potholes.R;
+import com.example.potholes.map.MapsActivity;
 import com.example.potholes.utils.ReceiveLimitThread;
 import com.example.potholes.utils.ViewHolesThread;
 import com.example.potholes.entities.Hole;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MainFragment extends Fragment {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2;
     private Button detect_holes;
     private Button view_holes;
+    private Button view_onMap;
     private ProgressDialog dialog;
     private ArrayList<Hole> holeArrayList;
-    private TextView username;
     private LocationManager locationManager;
 
 
@@ -51,6 +55,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setUpViewComponents(view);
         setUpComponents(view);
         setUpListeners(view);
 
@@ -67,9 +72,13 @@ public class MainFragment extends Fragment {
 
     }
 
-    private void setUpListeners(View view) {
+    private void setUpViewComponents(View view) {
         detect_holes = view.findViewById(R.id.rilevaBtn);
         view_holes = view.findViewById(R.id.vediBucheBtn);
+        view_onMap = view.findViewById(R.id.viewOnMapbtn);
+    }
+
+    private void setUpListeners(View view) {
 
         detect_holes.setOnClickListener(v -> {
             if (gpsIsEnabled()) {
@@ -84,6 +93,13 @@ public class MainFragment extends Fragment {
         view_holes.setOnClickListener(v -> {
             if (gpsIsEnabled())
                 viewHoles();
+            else
+                showGPSDisabledDialog();
+        });
+
+        view_onMap.setOnClickListener(v -> {
+            if (gpsIsEnabled())
+                startActivity(new Intent(getContext(), MapsActivity.class));
             else
                 showGPSDisabledDialog();
         });

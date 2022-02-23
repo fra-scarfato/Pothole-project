@@ -32,6 +32,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
     }
 
+    /*
+
+    Recuperiamo l'array list di Hole in un certo raggio dalla posizione corrente per poi posizionare
+    i marker per ogni buca recuperata dal server
+
+     */
 
     @Override
     public void onMapReady(GoogleMap googleMap) {

@@ -81,8 +81,6 @@ public class ViewHolesThread implements Runnable{
                 if(checkConnection) {
                     holeArrayList = parseJSON();
                     sendHoleArrayListToViewHoleFragment(context,holeArrayList);
-                    //TODO:Cambiare
-                    Toast.makeText(context, "OLEEEE\nUsername:"+holeArrayList.get(0).getAddress()+",Lat:"+holeArrayList.get(0).getLat()+",Lon:"+holeArrayList.get(0).getLon(),Toast.LENGTH_LONG).show();
                 } else {
                     MotionToast.Companion.darkToast(activity, "Errore","Connessione al server non riuscita.\nRiprova più tardi.", MotionToastStyle.ERROR,MotionToast.GRAVITY_BOTTOM, MotionToast.LONG_DURATION, ResourcesCompat.getFont(context, R.font.helveticabold));
 
