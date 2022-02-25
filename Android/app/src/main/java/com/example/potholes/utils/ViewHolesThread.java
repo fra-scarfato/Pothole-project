@@ -79,6 +79,7 @@ public class ViewHolesThread implements Runnable{
             public void run() {
                 //Se la connessione al server è stata effettuata correttamente allora passa a rilevare le buche
                 if(checkConnection) {
+                    holeArrayList = new ArrayList<>();
                     holeArrayList = parseJSON();
                     sendHoleArrayListToViewHoleFragment(context,holeArrayList);
                 } else {
@@ -130,7 +131,8 @@ public class ViewHolesThread implements Runnable{
     private void addFragment(Fragment fragment) {
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragment, fragment);
+        fragmentTransaction.add(R.id.fragment, fragment,"ViewHole");
+        fragmentTransaction.addToBackStack("ViewHole");
         fragmentTransaction.commit();
     }
 }

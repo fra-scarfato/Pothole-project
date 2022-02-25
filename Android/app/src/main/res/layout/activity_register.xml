@@ -66,9 +66,6 @@
         app:layout_constraintTop_toTopOf="@id/ruota" />
 
 
-
-
-
     <EditText
         android:id="@+id/username_editText"
         android:layout_width="fill_parent"
@@ -81,14 +78,13 @@
         android:fontFamily="sans-serif-light"
         android:hint="@string/insert_username"
         android:inputType="text"
-        android:textStyle="bold"
-        android:textSize="20sp"
         android:maxLength="32"
         android:minHeight="48dp"
         android:paddingStart="16dp"
         android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
 
-        android:textColorHint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/BlackFrame"
         app:layout_constraintStart_toStartOf="@+id/BlackFrame"
@@ -105,9 +101,9 @@
         android:background="@drawable/btn_background"
         android:stateListAnimator="@null"
         android:text="@string/continue_button"
+        android:textAllCaps="false"
         android:textColor="@color/black"
         android:textSize="20sp"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
