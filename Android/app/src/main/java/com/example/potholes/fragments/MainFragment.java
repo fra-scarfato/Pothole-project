@@ -91,9 +91,11 @@ public class MainFragment extends Fragment {
         });
 
         view_holes.setOnClickListener(v -> {
-            if (gpsIsEnabled())
+            if (gpsIsEnabled()) {
+                dialog.setMessage("Caricamento di tutte le buche");
+                dialog.show();
                 viewHoles();
-            else
+            }else
                 showGPSDisabledDialog();
         });
 
@@ -117,7 +119,7 @@ public class MainFragment extends Fragment {
             LocationServices.getFusedLocationProviderClient(getContext()).getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
-                    Thread rec = new Thread(new ViewHolesThread(location.getLatitude(), location.getLongitude(), getContext(), getActivity()));
+                    Thread rec = new Thread(new ViewHolesThread(location.getLatitude(), location.getLongitude(), getContext(), getActivity(),dialog));
                     rec.start();
                 }
             });

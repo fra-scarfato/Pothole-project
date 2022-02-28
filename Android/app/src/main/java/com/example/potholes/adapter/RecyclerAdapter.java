@@ -46,7 +46,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         String address = holeArrayList.get(position).getAddress();
-        Double variation = holeArrayList.get(position).getVariation();
+        Double variation = holeArrayList.get(position).getVar();
 
         holder.address.setText(address);
         holder.variation.setText(new DecimalFormat("#.####").format(variation));

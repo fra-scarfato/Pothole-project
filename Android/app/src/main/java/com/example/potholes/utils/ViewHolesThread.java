@@ -1,8 +1,12 @@
 package com.example.potholes.utils;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.widget.Toast;
 
 import androidx.core.content.res.ResourcesCompat;
@@ -43,18 +47,21 @@ public class ViewHolesThread implements Runnable{
     private Handler handler;
     private String message;
     private ArrayList<Hole> holeArrayList;
+    private ProgressDialog dialog;
 
-    public ViewHolesThread(double latitude, double longitude, Context context, FragmentActivity activity) {
+    public ViewHolesThread(double latitude, double longitude, Context context, FragmentActivity activity,ProgressDialog dialog) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.context = context;
         this.activity = activity;
         handler = new Handler();
+        this.dialog = dialog;
     }
 
     @Override
     public void run() {
         try {
+
             Socket s = new Socket();
             //Creo la socket con un timeout di 2 secondi per accorciare i tempi di ricezione di un'eventuale eccezione
             s.connect(new InetSocketAddress(IP, PORT), 1000);
@@ -82,6 +89,7 @@ public class ViewHolesThread implements Runnable{
                     holeArrayList = new ArrayList<>();
                     holeArrayList = parseJSON();
                     sendHoleArrayListToViewHoleFragment(context,holeArrayList);
+                    dialog.dismiss();
                 } else {
                     MotionToast.Companion.darkToast(activity, "Errore","Connessione al server non riuscita.\nRiprova più tardi.", MotionToastStyle.ERROR,MotionToast.GRAVITY_BOTTOM, MotionToast.LONG_DURATION, ResourcesCompat.getFont(context, R.font.helveticabold));
 
@@ -103,7 +111,7 @@ public class ViewHolesThread implements Runnable{
     }
 
     private ArrayList<Hole> parseJSON() {
-        ArrayList <Hole> holes = null;
+        ArrayList<Hole> holes = new ArrayList<>();
         try {
             JSONObject myJSON = new JSONObject(message);
             JSONArray holesJSON = myJSON.getJSONArray("potholes");
@@ -111,7 +119,6 @@ public class ViewHolesThread implements Runnable{
 
             for (int i = 0; i < size; i++) {
                 JSONObject singleHole = holesJSON.getJSONObject(i);
-                holes = new ArrayList<>(size);
                 holes.add(new Gson().fromJson(String.valueOf(singleHole), Hole.class));
             }
         } catch (JSONException e) {
@@ -122,7 +129,7 @@ public class ViewHolesThread implements Runnable{
 
     private void sendHoleArrayListToViewHoleFragment(Context context,ArrayList<Hole> holes){
         Bundle bundle = new Bundle();
-        bundle.putSerializable("holes", holes);
+        bundle.putParcelableArrayList("hole",(ArrayList<? extends Parcelable>) holes);
         ViewHoleFragment viewHoleFragment = new ViewHoleFragment();
         viewHoleFragment.setArguments(bundle);
         addFragment(viewHoleFragment);

@@ -119,7 +119,6 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
 
                         hole = new Hole(addresses.get(0).getAddressLine(0), z - limit);
                         holeArrayList.add(hole);
-                        Log.e("Address Line", addresses.get(0).getAddressLine(0));
                         RecyclerAdapter recyclerAdapter = new RecyclerAdapter(holeArrayList);
                         recyclerView.setItemAnimator(new DefaultItemAnimator());
                         recyclerView.setAdapter(recyclerAdapter);
