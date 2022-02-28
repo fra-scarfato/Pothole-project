@@ -5,9 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcel;
 import android.os.Parcelable;
-import android.widget.Toast;
 
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
@@ -18,6 +16,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.potholes.R;
 import com.example.potholes.entities.Hole;
 import com.example.potholes.fragments.ViewHoleFragment;
+import com.example.potholes.map.MapsActivity;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -48,14 +47,16 @@ public class ViewHolesThread implements Runnable{
     private String message;
     private ArrayList<Hole> holeArrayList;
     private ProgressDialog dialog;
+    private boolean toMap = false;
 
-    public ViewHolesThread(double latitude, double longitude, Context context, FragmentActivity activity,ProgressDialog dialog) {
+    public ViewHolesThread(double latitude, double longitude, Context context, FragmentActivity activity,ProgressDialog dialog,boolean toMap) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.context = context;
         this.activity = activity;
         handler = new Handler();
         this.dialog = dialog;
+        this.toMap = toMap;
     }
 
     @Override
@@ -88,7 +89,10 @@ public class ViewHolesThread implements Runnable{
                 if(checkConnection) {
                     holeArrayList = new ArrayList<>();
                     holeArrayList = parseJSON();
-                    sendHoleArrayListToViewHoleFragment(context,holeArrayList);
+                    if (toMap == false)
+                        sendHoleArrayListToViewHoleFragment(context,holeArrayList);
+                    else
+                        sendHoleArrayListToMapActivity(context,holeArrayList);
                     dialog.dismiss();
                 } else {
                     MotionToast.Companion.darkToast(activity, "Errore","Connessione al server non riuscita.\nRiprova più tardi.", MotionToastStyle.ERROR,MotionToast.GRAVITY_BOTTOM, MotionToast.LONG_DURATION, ResourcesCompat.getFont(context, R.font.helveticabold));
@@ -96,6 +100,12 @@ public class ViewHolesThread implements Runnable{
                 }
             }
         });
+    }
+
+    private void sendHoleArrayListToMapActivity(Context context, ArrayList<Hole> holeArrayList) {
+        Intent intent = new Intent(context, MapsActivity.class);
+        intent.putParcelableArrayListExtra("hole",(ArrayList<? extends Parcelable>) holeArrayList);
+        activity.startActivity(intent);
     }
 
     private void setNoConnection() {

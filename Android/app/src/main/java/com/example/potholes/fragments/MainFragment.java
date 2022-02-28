@@ -94,15 +94,17 @@ public class MainFragment extends Fragment {
             if (gpsIsEnabled()) {
                 dialog.setMessage("Caricamento di tutte le buche");
                 dialog.show();
-                viewHoles();
+                viewHoles(false);
             }else
                 showGPSDisabledDialog();
         });
 
         view_onMap.setOnClickListener(v -> {
-            if (gpsIsEnabled())
-                startActivity(new Intent(getContext(), MapsActivity.class));
-            else
+            if (gpsIsEnabled()) {
+                dialog.setMessage("Caricamento");
+                dialog.show();
+                viewHoles(true);
+            }else
                 showGPSDisabledDialog();
         });
 
@@ -114,12 +116,12 @@ public class MainFragment extends Fragment {
         rec.start();
     }
 
-    private void viewHoles() {
+    private void viewHoles(boolean toMap) {
         try {
             LocationServices.getFusedLocationProviderClient(getContext()).getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
-                    Thread rec = new Thread(new ViewHolesThread(location.getLatitude(), location.getLongitude(), getContext(), getActivity(),dialog));
+                    Thread rec = new Thread(new ViewHolesThread(location.getLatitude(), location.getLongitude(), getContext(), getActivity(),dialog,toMap));
                     rec.start();
                 }
             });
