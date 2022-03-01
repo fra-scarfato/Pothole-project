@@ -10,12 +10,13 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/rilevaBtn"
-        android:layout_width="190dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:background="@drawable/btn_background"
-        android:text="@string/rilevazioneInCorsoBtn"
-        android:textSize="16sp"
+        android:text="Ferma la rilevazione"
+        android:textAllCaps="false"
+        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,12 +26,12 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="24dp"
         android:text="@string/bucheRilevate"
         android:textColor="@color/orange"
         android:textSize="16sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rilevaBtn" />
 

@@ -13,16 +13,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.example.potholes.HomeActivity;
 import com.example.potholes.adapter.RecyclerAdapter;
 import com.example.potholes.entities.Hole;
 import com.example.potholes.R;
@@ -37,6 +41,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import www.sanju.motiontoast.MotionToast;
+import www.sanju.motiontoast.MotionToastStyle;
+
 
 public class DetectHoleFragment extends Fragment implements SensorEventListener {
 
@@ -50,11 +57,13 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
     private String buffer = new String();
     private boolean checkConnection = false;
     private Hole hole;
+    private Button detect_btn;
 
     private RecyclerView recyclerView;
     private Geocoder geocoder;
     private List<Address> addresses;
     private Context mContext;
+    private boolean stop_sensor = false;
 
 
     // Inizializza il context dal onAttach
@@ -80,8 +89,20 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
         super.onViewCreated(view, savedInstanceState);
         setupComponents();
         setUpViewComponents(view);
+        setListeners();
+        MotionToast.Companion.darkToast(getActivity(),"","La rilevazione è iniziata", MotionToastStyle.SUCCESS,MotionToast.GRAVITY_BOTTOM, MotionToast.LONG_DURATION, ResourcesCompat.getFont(mContext,R.font.helveticabold));
 
 
+
+    }
+
+    private void setListeners() {
+        detect_btn.setOnClickListener(v -> {
+            stop_sensor = true;
+            detect_btn.setText("Rilevazione terminata");
+            MotionToast.Companion.darkToast(getActivity(),"","La rilevazione è terminata", MotionToastStyle.SUCCESS,MotionToast.GRAVITY_BOTTOM, MotionToast.LONG_DURATION, ResourcesCompat.getFont(mContext,R.font.helveticabold));
+
+        });
     }
 
     private void setupComponents() {
@@ -93,48 +114,55 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
 
 
     private void setUpViewComponents(View view) {
+        detect_btn = view.findViewById(R.id.rilevaBtn);
         recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+
     }
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         float z = sensorEvent.values[2];
-        if (z > limit) {
-            try {
 
-                Task<Location> taskLocation = LocationServices.getFusedLocationProviderClient(mContext).getLastLocation();
-                taskLocation.addOnCompleteListener(task -> {
-                    //sensorManager.unregisterListener(this);
-                    currentLocation = task.getResult();
-                    if (currentLocation != null) {
-                        sendHolePosition((z - limit), currentLocation);
+        if (!stop_sensor) {
+            if (z > limit) {
+                try {
 
-                        try {
-                            addresses = geocoder.getFromLocation(currentLocation.getLatitude(),currentLocation.getLongitude(),1);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                    Task<Location> taskLocation = LocationServices.getFusedLocationProviderClient(mContext).getLastLocation();
+                    taskLocation.addOnCompleteListener(task -> {
+                        //sensorManager.unregisterListener(this);
+                        currentLocation = task.getResult();
+                        if (currentLocation != null) {
+                            sendHolePosition((z - limit), currentLocation);
+
+                            try {
+                                addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            hole = new Hole(addresses.get(0).getAddressLine(0), z - limit);
+                            holeArrayList.add(hole);
+                            RecyclerAdapter recyclerAdapter = new RecyclerAdapter(holeArrayList);
+                            recyclerView.setItemAnimator(new DefaultItemAnimator());
+                            recyclerView.setAdapter(recyclerAdapter);
+
+                        } else {
+                            Toast.makeText(getContext(), "Location null", Toast.LENGTH_SHORT).show();
                         }
 
-                        hole = new Hole(addresses.get(0).getAddressLine(0), z - limit);
-                        holeArrayList.add(hole);
-                        RecyclerAdapter recyclerAdapter = new RecyclerAdapter(holeArrayList);
-                        recyclerView.setItemAnimator(new DefaultItemAnimator());
-                        recyclerView.setAdapter(recyclerAdapter);
-
-                    } else {
-                        Toast.makeText(getContext(), "Location null", Toast.LENGTH_SHORT).show();
-                    }
-
-                });
+                    });
 
 
-            } catch (SecurityException e) {
-                e.printStackTrace();
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                }
+
+
             }
-
-
+        } else {
+            sensorManager.unregisterListener(this);
         }
     }
 
@@ -152,9 +180,6 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
             //TODO:RICHIESTA GPS
         }
     }
-
-
-
 
 
 }

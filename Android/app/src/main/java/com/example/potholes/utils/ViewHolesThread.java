@@ -105,6 +105,11 @@ public class ViewHolesThread implements Runnable{
     private void sendHoleArrayListToMapActivity(Context context, ArrayList<Hole> holeArrayList) {
         Intent intent = new Intent(context, MapsActivity.class);
         intent.putParcelableArrayListExtra("hole",(ArrayList<? extends Parcelable>) holeArrayList);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         activity.startActivity(intent);
     }
 
@@ -142,6 +147,11 @@ public class ViewHolesThread implements Runnable{
         bundle.putParcelableArrayList("hole",(ArrayList<? extends Parcelable>) holes);
         ViewHoleFragment viewHoleFragment = new ViewHoleFragment();
         viewHoleFragment.setArguments(bundle);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         addFragment(viewHoleFragment);
     }
 
