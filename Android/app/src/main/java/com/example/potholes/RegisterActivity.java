@@ -47,7 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
     private final String IP = "20.73.84.69";
     private final int PORT = 80;
     private ProgressDialog dialog;
-    private String response;
+    private int response;
 
 
     ActivityResultLauncher<String[]> locationPermissionRequest =
@@ -141,7 +141,8 @@ public class RegisterActivity extends AppCompatActivity {
                     PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(s.getOutputStream())), true);
                     out.println("3" + username.getText().toString() + "#");
                     BufferedReader fromServer = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                    response = fromServer.readLine();
+                    final String buffer = fromServer.readLine();
+                    passInt(buffer);
                     s.close();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -150,8 +151,7 @@ public class RegisterActivity extends AppCompatActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        boolean check = response.equals("0");
-                        if (check) {
+                        if (response == 0) {
                             dialog.dismiss();
                             //Todo:Controllo duplicato
                             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -229,6 +229,10 @@ public class RegisterActivity extends AppCompatActivity {
     FINE CODICE PER I PERMESSI DELL'APP
 
      */
+
+    private void passInt(String st) {
+        response = Integer.parseInt(st);
+    }
 
 
 }
