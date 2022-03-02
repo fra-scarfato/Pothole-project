@@ -10,15 +10,27 @@ import androidx.core.content.res.ResourcesCompat;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.potholes.fragments.DetectHoleFragment;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 import www.sanju.motiontoast.MotionToast;
 import www.sanju.motiontoast.MotionToastStyle;
@@ -30,9 +42,13 @@ public class RegisterActivity extends AppCompatActivity {
     private Button continue_button;
     private EditText username;
     private SharedPreferences sharedPreferences;
-    //Forse non serve vediamo piu avanti
     public static boolean locationPermissionGranted;
     private static final int PERMISSION_REQUEST_CODE = 1;
+    private final String IP = "20.73.84.69";
+    private final int PORT = 80;
+    private ProgressDialog dialog;
+    private String response;
+
 
     ActivityResultLauncher<String[]> locationPermissionRequest =
             registerForActivityResult(new ActivityResultContracts
@@ -49,12 +65,13 @@ public class RegisterActivity extends AppCompatActivity {
                     }
             );
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-
+        dialog = new ProgressDialog(RegisterActivity.this);
         getPermissions();
 
         sharedPreferences = RegisterActivity.this.getSharedPreferences("user", MODE_PRIVATE);
@@ -88,12 +105,9 @@ public class RegisterActivity extends AppCompatActivity {
                     PackageManager.PERMISSION_GRANTED) {
 
                 if (!username.getText().toString().isEmpty()) {
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("username", username.getText().toString());
-                    editor.apply();
-                    Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
+                    dialog.setMessage("Invio dati al server");
+                    dialog.show();
+                    sendUsernameToServer(username);
 
                 } else {
                     //L'utente nn ha inserito un username
@@ -115,6 +129,51 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
+
+    private void sendUsernameToServer(EditText username) {
+        Handler handler = new Handler();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    Socket s = new Socket(IP, PORT);
+                    PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(s.getOutputStream())), true);
+                    out.println("3" + username.getText().toString() + "#");
+                    BufferedReader fromServer = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                    response = fromServer.readLine();
+                    s.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        boolean check = response.equals("0");
+                        if (check) {
+                            dialog.dismiss();
+                            //Todo:Controllo duplicato
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("username", username.getText().toString());
+                            editor.apply();
+                            Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        } else {
+                            dialog.dismiss();
+                            MotionToast.Companion.darkToast(RegisterActivity.this, "Errore", "Lo username inserito esiste già", MotionToastStyle.ERROR, MotionToast.GRAVITY_BOTTOM, MotionToast.LONG_DURATION, ResourcesCompat.getFont(RegisterActivity.this, R.font.helveticabold));
+
+                        }
+                    }
+                });
+
+            }
+        });
+
+        thread.start();
+
+    }
 
     /*
 
@@ -155,11 +214,11 @@ public class RegisterActivity extends AppCompatActivity {
 
     public void showPermissionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Enable Permissions");
-        builder.setMessage("You have to enable permissions in order to use the map");
+        builder.setTitle("Permessi necessari");
+        builder.setMessage("Devi abilitare i permessi per la localizzazione per poter usufruire della mappa");
         Intent permissions_intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
-        builder.setPositiveButton("Enable permissions", (dialog, which) ->
-                startActivityForResult(permissions_intent, PERMISSION_REQUEST_CODE)).setNegativeButton("No, Just Exit", (dialog, which) -> {
+        builder.setPositiveButton("Abilita permessi", (dialog, which) ->
+                startActivityForResult(permissions_intent, PERMISSION_REQUEST_CODE)).setNegativeButton("Annulla", (dialog, which) -> {
         });
         AlertDialog mGPSDialog = builder.create();
         mGPSDialog.show();
