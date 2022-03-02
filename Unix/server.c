@@ -4,6 +4,10 @@ pthread_attr_t attr;
 struct sockaddr_in server_addr;
 struct sockaddr_in client_addr;
 
+//Per i log 
+//# -> messaggi di servizio
+//*** -> errori o messaggi critici
+
 int main(int argc, char *argv[]) {
     
     //Dichiarazione variabili locali
@@ -16,6 +20,7 @@ int main(int argc, char *argv[]) {
     //Gestione dei segnali SIGINT e SIGTERM
     signal(SIGINT, handleSignal);
     signal(SIGTERM, handleSignal);
+    signal(SIGUSR1, createDatabase);
     
     //Configurazione dell'indirizzo del server e della sua porta
     server_addr.sin_family = AF_INET;
@@ -24,19 +29,19 @@ int main(int argc, char *argv[]) {
 
     //Creazione socket
     if((server_sd = socket(AF_INET,SOCK_STREAM,0)) <= 0)
-        perror("[***] Error! Can't create socket. For more information"), exit(EXIT_FAILURE);
+        fprintf(stderr, "[***] [%s] ", getLogTime()), perror("Error! Can't create socket. For more information"), exit(EXIT_FAILURE);
     
     printf("[#] [%s] Socket created.\n", getLogTime());
 
     //Binding dell'indirizzo alla socket
-    if (bind(server_sd, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1)
-        perror("[***] Error! Can't bind. For more information"), exit(EXIT_FAILURE);
+    if (check_value = bind(server_sd, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1)
+        fprintf(stderr, "[***] [%s] ", getLogTime()), perror("Error! Can't bind. For more information"), exit(EXIT_FAILURE);
     
     printf("[#] [%s] Connected to the port.\n", getLogTime());
 
     //Server in ascolto
     if(listen(server_sd, 10) == -1)
-        perror("[***] Error! Can't listen. For more information"), exit(EXIT_FAILURE);
+        fprintf(stderr, "[***] [%s] ", getLogTime()), perror("Error! Can't listen. For more information"), exit(EXIT_FAILURE);
     
     printf("[#] [%s] Listen to incoming connections.\n", getLogTime());
     
@@ -46,13 +51,13 @@ int main(int argc, char *argv[]) {
 
     //Configurazione dell'attributo per i thread (DETACHED STATE)
     if ((check_value = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED)) != 0) 
-        fprintf(stderr,"[***] [%s] Error! Can't set detached state. For more information: %s", getLogTime(), strerror(check_value)), exit(EXIT_FAILURE);
+        fprintf(stderr,"[***] [%s] Error! Can't set detached state. For more information: %s\n", getLogTime(), strerror(check_value)), exit(EXIT_FAILURE);
         
     while (1)
     {
         //Accettazioni dei client in ingresso e assegnazione del socket descriptor
         if((client_sd = accept(server_sd, (struct sockaddr *)&client_addr, &client_lngth)) == -1)
-            perror("[***] Error! Can't accept connection. For more information"), exit(EXIT_FAILURE);
+           fprintf(stderr,"[***] [%s] Error! Can't accept connection. For more information: %s", getLogTime(), strerror(check_value)), exit(EXIT_FAILURE);
         
         inet_ntop(AF_INET, &client_addr.sin_addr, client_ip, INET_ADDRSTRLEN);  //Memorizzazione dell'indirizzo del client accettato in formato 0.0.0.0
         printf("[#] [%s] Accepted connection from the server to client %s with socket descriptor %d.\n", getLogTime(), client_ip, client_sd);
@@ -65,9 +70,6 @@ int main(int argc, char *argv[]) {
         if((check_value = pthread_create(&tid, &attr, handleConnection, (void *)thread_sd)) != 0)
             fprintf(stderr,"[***] [%s] Error! Can't create thread. For more information: %s", getLogTime(), strerror(check_value)), exit(EXIT_FAILURE);   
     }
-
-    //Deallocazione memoria
-    free((void *)thread_sd);
 
     return 0;
 }

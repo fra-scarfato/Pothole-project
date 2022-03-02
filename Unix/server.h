@@ -19,7 +19,7 @@
 #define MYPORT 80
 #define MAXBUFF 200
 #define LIMIT 2.0
-#define GEO_RADIUS 2.5
+#define RADIUS 30
 #define DB_USER "test"
 #define DB_PWD "lso1234"
 #define DB_NAME "pothole"
@@ -28,7 +28,6 @@
 
 struct clientData
 {
-    char username[MAXBUFF];
     double longitude;
     double latitude;
     float variation;
@@ -38,10 +37,12 @@ typedef struct clientData clientData;
 
 //FUNZIONI PRINCIPALI "handling.c"
 void handleSignal(int);
+void createDatabase(int);
 void *handleConnection(void *arg);
 void sendLimit(int);
 void receiveHole(int, char []);
 void sendHoles(int, char []);
+void registerUsername(int, char []);
 
 //FUNZIONI AUSILIARIE GENERICHE "utils.c"
 char* getLogTime();
@@ -55,11 +56,13 @@ void extractPosition(clientData **, char []);
 void getNearbyHoles(clientData **, clientData *);
 double calculateDistance(double, double, double, double); 
 void createJSON(clientData **, char []);
+//- Funzione ausiliaria per salvare username nel database
+int saveUser(char []);
 
 
 //FUNZIONI AUSILIARIE PER STRUTTURA DATI "list.c"
-clientData* createNode(char [], char [], char [], char []);
-clientData* insert(clientData*, char [], char [], char [], char []);
+clientData* createNode(char [], char [], char []);
+clientData* insert(clientData*, char [], char [], char []);
 
 //VARIABILI GLOBALI
 extern pthread_attr_t attr;

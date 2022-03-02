@@ -1,1 +1,0 @@
-Cambiare tutti i perror con fprintf+strerr(..)

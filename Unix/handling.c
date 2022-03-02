@@ -8,7 +8,7 @@ void *handleConnection(void *arg)
 {
     //Dichiarazione variabili locali
     char buf[MAXBUFF];
-    int flag, client_sd = *((int *)arg);
+    int check_value, flag, client_sd = *((int *)arg);
     struct timespec ttime;
     
     
@@ -20,7 +20,7 @@ void *handleConnection(void *arg)
 
     //Lettura sulla socket e ricezione della richiesta da parte del client
     if(read(client_sd,buf,MAXBUFF) == -1)
-        perror("[***] Error! Can't read file. For more information: "), exit(EXIT_FAILURE);
+        fprintf(stderr,"[***] [%s] Error! Can't read file. For more information: %s", getLogTime(), strerror(check_value)), exit(EXIT_FAILURE);
 
     //Lettura della flag inviata dal client
     handleRequest(client_sd, &flag, buf);      //riga 24 "utils.c"
@@ -38,10 +38,14 @@ void *handleConnection(void *arg)
 
         case 2:
             sendHoles(client_sd, buf);
-            break;   
+            break;
+
+        case 3:
+            registerUsername(client_sd, buf);
+            break;  
     }
     if ((close(client_sd)) == -1)
-        perror("[***] Error! Can't close sd.\n"), exit(EXIT_FAILURE);
+        fprintf(stderr,"[***] [%s] Error! Can't close socket descriptor. For more information: %s", getLogTime(), strerror(check_value)), exit(EXIT_FAILURE);
     
     free(arg);
     pthread_exit(NULL);
@@ -56,13 +60,14 @@ void sendLimit(int client_sd)
 {
     //Dichiarazioni variabili locali
     char buffer[10];
+    int check_value;
     
     //Memorizzo il valore soglia nel buffer
     sprintf(buffer, "%f", LIMIT);
     
     //Manda il valore soglia al client
     if(write(client_sd, buffer, 4) == -1)
-        perror("[***] Error! Can't write on socket. For more information"), exit(EXIT_FAILURE);
+       fprintf(stderr,"[***] [%s] Error! Can't write on socket. For more information: %s", getLogTime(), strerror(check_value)), exit(EXIT_FAILURE);
     
     printf("[#] [%s] Sent limit value to client %d.\n", getLogTime(), client_sd);
 }
@@ -85,8 +90,6 @@ void receiveHole(int client_sd, char buf[])
     //Impachettare un singolo elemento data contenente i dati estratti
     saveHole(hole);                // riga 119 "utils.c"
     
-    printf("[#] [%s] Data correctly saved for client %d.\n", getLogTime(), client_sd);
-    
     free((void *)hole);
 }
 
@@ -101,7 +104,8 @@ void sendHoles(int client_sd, char buf[])
     //Dichiarazione variabili locali
     clientData *position = NULL;
     clientData *holes = NULL;
-    char json_string[1000] = "{\"potholes\":[";
+    char json_string[50000] = "{\"potholes\":[";
+    int check_value;
 
     //Estrazione della posizione attuale del client
     extractPosition(&position, buf);
@@ -113,7 +117,35 @@ void sendHoles(int client_sd, char buf[])
     createJSON(&holes, json_string);
 
     if(write(client_sd, json_string, strlen(json_string)) == -1)
-        perror("[***] Error! Can't write on socket. For more information"), exit(EXIT_FAILURE);
+        fprintf(stderr,"[***] [%s] Error! Can't write on socket. For more information: %s", getLogTime(), strerror(check_value)), exit(EXIT_FAILURE);
     
     printf("[#] [%s] Sent nearby holes to client %d.\n", getLogTime(), client_sd);
+}
+
+/*
+FUNZIONE registerUsername:
+- Riceve lo username e lo estrae
+- Registra lo username nel database 
+- Controlla i duplicati
+*/
+void registerUsername(int client_sd, char buf[])
+{
+    //Dichiarazione variabili globali
+    int check;  //in cui controllo se lo username è stato salvato o no sul database
+    int check_value;    //valore per errori del thread
+
+    //Salvo nel valore check se ho un errore o l'operazione è andata a buon fine
+    check = saveUser(buf);
+
+    if(check == 0)
+    {
+        if(write(client_sd, "0", 2) == -1)
+            fprintf(stderr,"[***] [%s] Error! Can't write on socket. For more information: %s", getLogTime(), strerror(check_value)), exit(EXIT_FAILURE);
+    }
+    else
+    {
+        if(write(client_sd, "-1", 2) == -1)
+            fprintf(stderr,"[***] [%s] Error! Can't write on socket. For more information: %s", getLogTime(), strerror(check_value)), exit(EXIT_FAILURE);
+    }
+    printf("[#] [%s] Sent check value to client %d.\n", getLogTime(), client_sd);
 }

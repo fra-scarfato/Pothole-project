@@ -40,6 +40,76 @@ void handleSignal(int signum)
 }
 
 /*
+FUNZIONE createDatabase:
+- Gestisce la creazione del database se arriva signal SIGUSR1
+*/
+void createDatabase(int signum)
+{
+    //Dichiarazione variabili locali
+    MYSQL *con;
+    char query[MAXBUFF];
+    int err = 0;
+    
+    //Inizializzazione connessione al database
+    if((con = mysql_init(NULL)) == NULL)
+        fprintf(stderr, "[***] [%s] Error! Can't initialize database connection. For more information: %s\n", getLogTime(), mysql_error(con)), exit(EXIT_FAILURE);
+
+    //Connessione al database
+    if(mysql_real_connect(con, DB_HOST, DB_USER, DB_PWD, NULL, 0, NULL, 0) == NULL)
+        mysql_close(con), fprintf(stderr, "[***] [%s] Error! Can't connect to database. For more information: %s\n", getLogTime(), mysql_error(con)), exit(EXIT_FAILURE);
+    printf("[#] [%s] Connected to database.\n", getLogTime());
+
+    //Preparazione della query ovvero creazione database
+    sprintf(query, "CREATE DATABASE %s", DB_NAME);
+    
+    //Esecuzione della query sul database
+    if (mysql_query(con, query))
+    {
+        fprintf(stderr, "[***] [%s] Error! Can't complete the query on the database. For more information: %s\n", getLogTime(), mysql_error(con)); 
+        err = mysql_errno(con);
+        if(err != 1007) //1007 = Database già esistente
+        {
+            mysql_close(con);
+            exit(EXIT_FAILURE);
+        }
+    }
+    
+    if(err == 0)
+        printf("[#] [%s] Database created correctly.\n", getLogTime());
+        
+    query[0] = '\0';
+    //Preparazione query per usare database appena creato
+    sprintf(query, "USE %s", DB_NAME);
+    
+    //Esecuzione query
+    if(mysql_query(con, query))
+        fprintf(stderr, "[***] [%s] Error! Can't complete the query on the database. For more information: %s\n", getLogTime(), mysql_error(con)), mysql_close(con), exit(EXIT_FAILURE); 
+
+    query[0] = '\0';
+    //Preparazione query per creazione tabella
+    sprintf(query, "CREATE TABLE %s (latitude double, longitude double, variation float, CONSTRAINT pk PRIMARY KEY (latitude, longitude))", DB_TABLE);
+    
+    //Esecuzione query
+    if(mysql_query(con, query))
+        fprintf(stderr, "[***] [%s] Error! Can't complete the query on the database. For more information: %s\n", getLogTime(), mysql_error(con)), mysql_close(con), exit(EXIT_FAILURE); 
+    
+    if(err == 0)
+        printf("[#] [%s] Table %s created correctly.\n", getLogTime(), DB_NAME);
+    
+    query[0] = '\0';
+    //Preparazione query per creazione tabella
+    sprintf(query, "CREATE TABLE user (username VARCHAR(32) PRIMARY KEY)");
+    
+    //Esecuzione query
+    if(mysql_query(con, query))
+        fprintf(stderr, "[***] [%s] Error! Can't complete the query on the database. For more information: %s\n", getLogTime(), mysql_error(con)), mysql_close(con), exit(EXIT_FAILURE);
+    
+    if(err == 0)
+        printf("[#] [%s] Table \"user\" created correctly.\n", getLogTime());
+    mysql_close(con); 
+}
+
+/*
 FUNZIONE handleRequest:
 - Traduce la richiesta del client
 - Riformatta la stringa in modo opportuno nel caso di invio di posizione e variazione rispetto al valore soglia
@@ -91,6 +161,21 @@ void handleRequest(int client_sd, int *flag, char buf[])
         buf[new_index++] = '#';
         buf[new_index] = '\0';
     }
+    else if(buf[0] == '3')
+    {
+        *flag = 3;
+        printf("[#] [%s] Client %d request is type 3: client wants to access.\n", getLogTime(), client_sd);
+        
+        //Ciclo che elimina il primo elemento che indica il tipo di richiesta e salva nello stesso buffer lo username
+        while(buf[old_index] != '#')
+        {
+            buf[new_index] = buf[old_index];
+            new_index++;
+            old_index++;
+        }
+        
+        buf[new_index++] = '\0';
+    }
     //Caso in cui il messaggio sia corrotto o non formattato correttamente
     else
         fprintf(stderr, "[***] [%s] Error! String is not formatted properly. Try again.\n", getLogTime());
@@ -131,7 +216,7 @@ void extractHole(clientData **hole, char buf[])
     
 
     //Impachettamento dati in una struct
-    *hole = createNode("fra", latitude, longitude, variation);
+    *hole = createNode(latitude, longitude, variation);
 }
 
 /*
@@ -145,6 +230,7 @@ void saveHole(clientData *hole)
     //Dichiarazione variabili locali
     MYSQL *con;
     char query[MAXBUFF];
+    int err;
     
     //Inizializzazione connessione al database
     if((con = mysql_init(NULL)) == NULL)
@@ -156,21 +242,33 @@ void saveHole(clientData *hole)
     printf("[#] [%s] Connected to database.\n", getLogTime());
 
     //Preparazione della query
-    sprintf(query, "INSERT INTO %s VALUES ('fra',%f,%f,%f);",DB_TABLE, hole->latitude, hole->longitude, hole->variation);
+    sprintf(query, "INSERT INTO %s VALUES (%f,%f,%f);",DB_TABLE, hole->latitude, hole->longitude, hole->variation);
     
     //Esecuzione della query sul database
     if (mysql_query(con, query))
-        fprintf(stderr, "[***] [%s] Error! Can't complete the query on the database. For more information: %s\n", getLogTime(), mysql_error(con)), mysql_close(con), exit(EXIT_FAILURE);
+    {
+        fprintf(stderr, "[***] [%s] Error! Can't complete the query on the database. For more information: %s\n", getLogTime(), mysql_error(con)); 
+        
+        err = mysql_errno(con);
+        if(err != 1062) //1062 = Inserito un duplicato
+        {
+            mysql_close(con);
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    if(err == 0)
+        printf("[#] [%s] Data correctly saved.\n", getLogTime());
 
     mysql_close(con); 
 }
 
 /*
-FUNZIONE extractHole:
+FUNZIONE extractPosition:
 - Estrazione dati effettivi dalla stringa mandata su socket
 - Impachettamento dati
 */
-void extractPosition(clientData **hole, char buf[])
+void extractPosition(clientData **position, char buf[])
 {
     int buf_index = 0, i;
     char latitude[MAXBUFF], longitude[MAXBUFF];
@@ -194,7 +292,7 @@ void extractPosition(clientData **hole, char buf[])
     longitude[i] = '\0';
     
     //Impachettamento dati in una struct
-    *hole = createNode("fra", latitude, longitude, "0");
+    *position = createNode(latitude, longitude, "0");
 }
 
 /*
@@ -210,7 +308,7 @@ void getNearbyHoles(clientData **holes, clientData *position)
     MYSQL *con;
     MYSQL_RES *result;
     MYSQL_ROW row;
-    char username[MAXBUFF], longitude[MAXBUFF], latitude[MAXBUFF], variation[MAXBUFF], query[MAXBUFF], json_string[1000] = "{""potholes"":[";
+    char longitude[MAXBUFF], latitude[MAXBUFF], variation[MAXBUFF], query[MAXBUFF];
     
     //Inizializzazione connessione al database
     if((con = mysql_init(NULL)) == NULL)
@@ -238,15 +336,15 @@ void getNearbyHoles(clientData **holes, clientData *position)
     //Impachettamento delle buche nella struct
     while ((row = mysql_fetch_row(result)))
     {
-        double distance_client_hole = calculateDistance(position->latitude, position->longitude, atof(row[1]), atof(row[2]));
+        double distance_client_hole = calculateDistance(position->latitude, position->longitude, atof(row[0]), atof(row[1]));
         
-        if(distance_client_hole <= GEO_RADIUS)
-            *holes = insert(*holes, row[0], row[1], row[2], row[3]);
+        if(distance_client_hole <= RADIUS)
+            *holes = insert(*holes, row[0], row[1], row[2]);
     } 
 }
 
 /*
-FUNZIONE calculate_Distance:
+FUNZIONE calculate_Distance (formula di Haversine):
 - Calcola la distanza tra la posizione attuale e la buca ripresa dal database (in km)
 N.B: Aggiungi -lm quando compili
 */
@@ -279,8 +377,8 @@ void createJSON(clientData **holes, char json_string[])
     //Funzione ricorsiva 
     if(*holes != NULL)
     {
-        //Salva una buca come elemento {"username":"??","lat":??,"lon":??,"variation":??}
-        sprintf(tmp, "{\"username\":\"%s\",\"lat\":%f,\"lon\":%f,\"var\":%f}", (*holes)->username, (*holes)->latitude, (*holes)->longitude, (*holes)->variation);
+        //Salva una buca come elemento {"lat":??,"lon":??,"variation":??}
+        sprintf(tmp, "{\"lat\":%f,\"lon\":%f,\"var\":%f}", (*holes)->latitude, (*holes)->longitude, (*holes)->variation);
         
         //Se il prossimo non è l'ultimo elemento della lista continua a concatenare elementi con la virgola
         if((*holes)->next != NULL)
@@ -293,4 +391,52 @@ void createJSON(clientData **holes, char json_string[])
         strcpy(json_string, strcat(json_string, tmp));
         createJSON(&((*holes)->next), json_string);
     }    
+}
+
+/*
+FUNZIONE saveUser
+- Salva lo username nel database
+- Se duplicato manda valore -1
+- Se salvataggio avviene correttamente manda valore 0
+*/
+int saveUser(char username[])
+{
+    //Dichiarazione variabili locali
+    MYSQL *con;
+    char query[MAXBUFF];
+    int err = 0;
+    
+    //Inizializzazione connessione al database
+    if((con = mysql_init(NULL)) == NULL)
+        fprintf(stderr, "[***] [%s] Error! Can't initialize database connection. For more information: %s\n", getLogTime(), mysql_error(con)), exit(EXIT_FAILURE);
+
+    //Connessione al database
+    if(mysql_real_connect(con, DB_HOST, DB_USER, DB_PWD, DB_NAME, 0, NULL, 0) == NULL)
+        mysql_close(con), fprintf(stderr, "[***] [%s] Error! Can't connect to database. For more information: %s\n", getLogTime(), mysql_error(con)), exit(EXIT_FAILURE);
+    printf("[#] [%s] Connected to database.\n", getLogTime());
+
+    //Preparazione della query
+    sprintf(query, "INSERT INTO user (username) VALUES ('%s')", username);
+    
+    //Esecuzione della query sul database
+    if (mysql_query(con, query))
+    {
+        fprintf(stderr, "[***] [%s] Error! Can't complete the query on the database. For more information: %s\n", getLogTime(), mysql_error(con)); 
+        
+        err = mysql_errno(con);
+        if(err != 1062) //1062 = Inserito un duplicato
+        {
+            mysql_close(con);
+            exit(EXIT_FAILURE);
+        }
+        else if(err == 1062)
+            err = -1;
+    }
+
+    if(err == 0)
+        printf("[#] [%s] Username %s correctly saved.\n", getLogTime(), username);
+
+    mysql_close(con); 
+    
+    return err; 
 }
