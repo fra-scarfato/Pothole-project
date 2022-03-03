@@ -424,7 +424,7 @@ int saveUser(char username[])
         fprintf(stderr, "[***] [%s] Error! Can't complete the query on the database. For more information: %s\n", getLogTime(), mysql_error(con)); 
         
         err = mysql_errno(con);
-        if(err != 1062) //1062 = Inserito un duplicato
+        if((err != 1062) && (err != 0)) //1062 = Inserito un duplicato
         {
             mysql_close(con);
             exit(EXIT_FAILURE);

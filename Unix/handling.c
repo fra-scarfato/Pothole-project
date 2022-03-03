@@ -133,24 +133,19 @@ void registerUsername(int client_sd, char buf[])
     //Dichiarazione variabili globali
     int check;  //in cui controllo se lo username è stato salvato o no sul database
     int check_value;    //valore per errori del thread
-    char checkV[4];
 
     //Salvo nel valore check se ho un errore o l'operazione è andata a buon fine
     check = saveUser(buf);
 
     if(check == 0)
     {
-        strcpy(checkV, "0");
-        checkV[1] = '\0';
-        if((write(client_sd, checkV, 2)) == -1)
+        if((write(client_sd, "Accepted", 8) == -1))
             fprintf(stderr,"[***] [%s] Error! Can't write on socket. For more information: %s", getLogTime(), strerror(check_value)), exit(EXIT_FAILURE);
     }
     else
     {
-        strcpy(checkV, "1");
-        checkV[2] = '\0';
-        if((write(client_sd, checkV, 2)) == -1)
+        if((write(client_sd, "Duplicate", 9) == -1))
             fprintf(stderr,"[***] [%s] Error! Can't write on socket. For more information: %s", getLogTime(), strerror(check_value)), exit(EXIT_FAILURE);
     }
-    printf("[#] [%s] Sent check value to client %d.\n", getLogTime(), client_sd);
+    printf("[#] [%s] Sent check value %d to client %d.\n", getLogTime(), check, client_sd);
 }
