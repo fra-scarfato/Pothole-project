@@ -430,7 +430,7 @@ int saveUser(char username[])
             exit(EXIT_FAILURE);
         }
         else if(err == 1062)
-            err = -1;
+            err = 1;
     }
 
     if(err == 0)
