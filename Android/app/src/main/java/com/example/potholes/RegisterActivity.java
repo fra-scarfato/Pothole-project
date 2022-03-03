@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -30,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import www.sanju.motiontoast.MotionToast;
@@ -47,7 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
     private final String IP = "20.73.84.69";
     private final int PORT = 80;
     private ProgressDialog dialog;
-    private int response;
+    private String response;
 
 
     ActivityResultLauncher<String[]> locationPermissionRequest =
@@ -137,12 +139,13 @@ public class RegisterActivity extends AppCompatActivity {
             public void run() {
                 try {
 
-                    Socket s = new Socket(IP, PORT);
+                    Socket s = new Socket();
+                    s.connect(new InetSocketAddress(IP, PORT), 1000);
                     PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(s.getOutputStream())), true);
                     out.println("3" + username.getText().toString() + "#");
                     BufferedReader fromServer = new BufferedReader(new InputStreamReader(s.getInputStream()));
                     final String buffer = fromServer.readLine();
-                    passInt(buffer);
+                    passString(buffer);
                     s.close();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -151,9 +154,9 @@ public class RegisterActivity extends AppCompatActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if (response == 0) {
+                        Log.e("Response",response);
+                        if (response.equals("Accepted")) {
                             dialog.dismiss();
-                            //Todo:Controllo duplicato
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("username", username.getText().toString());
                             editor.apply();
@@ -230,8 +233,8 @@ public class RegisterActivity extends AppCompatActivity {
 
      */
 
-    private void passInt(String st) {
-        response = Integer.parseInt(st);
+    private void passString(String st) {
+        response = String.copyValueOf(st.toCharArray());
     }
 
 
