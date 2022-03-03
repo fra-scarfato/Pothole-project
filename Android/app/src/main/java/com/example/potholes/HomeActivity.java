@@ -58,7 +58,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        MotionToast.Companion.darkToast(HomeActivity.this,"","Bentornato "+ username, MotionToastStyle.SUCCESS,MotionToast.GRAVITY_BOTTOM, MotionToast.LONG_DURATION, ResourcesCompat.getFont(HomeActivity.this,R.font.helveticabold));
+        MotionToast.Companion.darkToast(HomeActivity.this,"Accesso effettuato","Ciao "+username, MotionToastStyle.SUCCESS,MotionToast.GRAVITY_BOTTOM, MotionToast.LONG_DURATION, ResourcesCompat.getFont(HomeActivity.this,R.font.helveticabold));
 
     }
 

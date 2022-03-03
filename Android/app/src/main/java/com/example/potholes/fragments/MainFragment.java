@@ -40,7 +40,6 @@ public class MainFragment extends Fragment {
     private Button view_holes;
     private Button view_onMap;
     private ProgressDialog dialog;
-    private ArrayList<Hole> holeArrayList;
     private LocationManager locationManager;
 
 
@@ -67,7 +66,6 @@ public class MainFragment extends Fragment {
 
     private void setUpComponents(View view) {
         locationManager = (LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE);
-        holeArrayList = new ArrayList<>();
         dialog = new ProgressDialog(getContext());
 
     }

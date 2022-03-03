@@ -90,18 +90,20 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
         setupComponents();
         setUpViewComponents(view);
         setListeners();
-        MotionToast.Companion.darkToast(getActivity(),"","La rilevazione è iniziata", MotionToastStyle.SUCCESS,MotionToast.GRAVITY_BOTTOM, MotionToast.LONG_DURATION, ResourcesCompat.getFont(mContext,R.font.helveticabold));
-
+        MotionToast.Companion.darkToast(getActivity(), "", "La rilevazione è iniziata", MotionToastStyle.SUCCESS, MotionToast.GRAVITY_BOTTOM, MotionToast.LONG_DURATION, ResourcesCompat.getFont(mContext, R.font.helveticabold));
 
 
     }
 
     private void setListeners() {
         detect_btn.setOnClickListener(v -> {
-            stop_sensor = true;
-            detect_btn.setText("Rilevazione terminata");
-            MotionToast.Companion.darkToast(getActivity(),"","La rilevazione è terminata", MotionToastStyle.SUCCESS,MotionToast.GRAVITY_BOTTOM, MotionToast.LONG_DURATION, ResourcesCompat.getFont(mContext,R.font.helveticabold));
-
+            if (detect_btn.getText().equals("Rilevazione terminata"))
+                detect_btn.setClickable(false);
+            else {
+                stop_sensor = true;
+                detect_btn.setText("Rilevazione terminata");
+                MotionToast.Companion.darkToast(getActivity(), "", "La rilevazione è terminata", MotionToastStyle.SUCCESS, MotionToast.GRAVITY_BOTTOM, MotionToast.LONG_DURATION, ResourcesCompat.getFont(mContext, R.font.helveticabold));
+            }
         });
     }
 

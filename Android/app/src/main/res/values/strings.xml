@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PotHoles</string>
+    <string name="app_name">PotHole</string>
     <string name="poth">POTH</string>
     <string name="poth_LE">LE</string>
     <string name="detector">DETECTOR</string>
