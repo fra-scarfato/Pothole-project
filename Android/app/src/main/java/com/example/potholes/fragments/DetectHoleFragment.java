@@ -90,7 +90,6 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
         setupComponents();
         setUpViewComponents(view);
         setListeners();
-        MotionToast.Companion.darkToast(getActivity(), "", "La rilevazione è iniziata", MotionToastStyle.SUCCESS, MotionToast.GRAVITY_BOTTOM, MotionToast.LONG_DURATION, ResourcesCompat.getFont(mContext, R.font.helveticabold));
 
 
     }
@@ -125,10 +124,10 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        float z = sensorEvent.values[2];
+        float y = sensorEvent.values[1];
 
         if (!stop_sensor) {
-            if (z > limit) {
+            if (y > limit) {
                 try {
 
                     Task<Location> taskLocation = LocationServices.getFusedLocationProviderClient(mContext).getLastLocation();
@@ -136,15 +135,14 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
                         //sensorManager.unregisterListener(this);
                         currentLocation = task.getResult();
                         if (currentLocation != null) {
-                            sendHolePosition((z - limit), currentLocation);
-
+                            sendHolePosition((y - limit), currentLocation);
                             try {
                                 addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
 
-                            hole = new Hole(addresses.get(0).getAddressLine(0), z - limit);
+                            hole = new Hole(addresses.get(0).getAddressLine(0), y - limit);
                             holeArrayList.add(hole);
                             RecyclerAdapter recyclerAdapter = new RecyclerAdapter(holeArrayList);
                             recyclerView.setItemAnimator(new DefaultItemAnimator());
