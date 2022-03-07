@@ -6,10 +6,10 @@ import android.os.Parcelable;
 
 public class Hole implements Parcelable {
 
-    String address;
-    double lat;
-    double lon;
-    double var;
+    private String address;
+    private double lat;
+    private double lon;
+    private double var;
 
 
     public Hole(String address, double lat, double lon, double variation) {
