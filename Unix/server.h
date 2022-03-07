@@ -18,7 +18,7 @@
 
 #define MYPORT 80
 #define MAXBUFF 200
-#define LIMIT 2.0
+#define LIMIT 10.0
 #define RADIUS 30
 #define DB_USER "test"
 #define DB_PWD "lso1234"

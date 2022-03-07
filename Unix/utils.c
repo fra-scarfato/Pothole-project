@@ -372,8 +372,7 @@ FUNZIONE createJSON:
 void createJSON(clientData **holes, char json_string[])
 {
     char tmp[1000];
-    int length;
-    
+        
     //Funzione ricorsiva 
     if(*holes != NULL)
     {

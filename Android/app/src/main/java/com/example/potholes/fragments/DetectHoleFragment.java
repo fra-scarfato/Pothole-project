@@ -129,10 +129,8 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
         if (!stop_sensor) {
             if (y > limit) {
                 try {
-
                     Task<Location> taskLocation = LocationServices.getFusedLocationProviderClient(mContext).getLastLocation();
                     taskLocation.addOnCompleteListener(task -> {
-                        //sensorManager.unregisterListener(this);
                         currentLocation = task.getResult();
                         if (currentLocation != null) {
                             sendHolePosition((y - limit), currentLocation);
@@ -141,12 +139,14 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-
                             hole = new Hole(addresses.get(0).getAddressLine(0), y - limit);
                             holeArrayList.add(hole);
                             RecyclerAdapter recyclerAdapter = new RecyclerAdapter(holeArrayList);
                             recyclerView.setItemAnimator(new DefaultItemAnimator());
                             recyclerView.setAdapter(recyclerAdapter);
+
+
+
 
                         } else {
                             Toast.makeText(getContext(), "Location null", Toast.LENGTH_SHORT).show();
