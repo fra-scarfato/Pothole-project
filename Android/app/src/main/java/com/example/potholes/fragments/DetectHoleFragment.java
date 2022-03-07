@@ -176,8 +176,6 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
         if (currentLocation != null) {
             Thread rec = new Thread(new SendHoleThread(currentLocation, variation));
             rec.start();
-        } else {
-            //TODO:RICHIESTA GPS
         }
     }
 

@@ -29,7 +29,7 @@ import com.google.android.gms.location.LocationServices;
 import www.sanju.motiontoast.MotionToast;
 import www.sanju.motiontoast.MotionToastStyle;
 
-//TODO:RICHIEDERE ATTIVAZIONE GPS
+
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -50,7 +50,6 @@ public class HomeActivity extends AppCompatActivity {
         mainFragment = new MainFragment();
 
         setUpViewComponents();
-        setUpListeners();
         setUpLocationServices();
 
     }
@@ -71,21 +70,11 @@ public class HomeActivity extends AppCompatActivity {
         LocationCallback mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
-                //TODO:Controlli su LocationResult
-                /*public void onLocationResult(LocationResult locationResult) {
-                    if (locationResult == null) {
-                        return;
-                    }
-                    for (Location location : locationResult.getLocations()) {
-                        if (location != null) {
 
-                        }
-                    }
-                }*/
             }
         };
         try {
-            //TODO:Stoppare se non serve (?)
+
             LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
         } catch (SecurityException e) {
             e.printStackTrace();
@@ -107,21 +96,7 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    private void setUpListeners() {
-        //Apre la mappa
-       /* apri_mappa.setOnClickListener(view -> {
-            //Prima di aprire la mapppa controlliamo se i permessi sono attivati
-            if (ContextCompat.checkSelfPermission(
-                    this, Manifest.permission.ACCESS_FINE_LOCATION) ==
-                    PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                    this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
-                    PackageManager.PERMISSION_GRANTED) {
-                startActivity(new Intent(HomeActivity.this, MapsActivity.class));
-            } else {
-                showPermissionDialog();
-            }
-        });*/
-    }
+
 
 
 
