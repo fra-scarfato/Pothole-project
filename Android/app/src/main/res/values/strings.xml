@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">PotHole</string>
+    <string name="poth">POTH</string>
+    <string name="poth_LE">LE</string>
+    <string name="detector">DETECTOR</string>
+    <string name="benvenuto">BENTORNATO</string>
+    <string name="rilevaBucheBtn">INIZIA A RILEVARE BUCHE</string>
+    <string name="visualizzaBucheBtn">   VISUALIZZA BUCHE   </string>
+    <string name="rilevaBtn">CONTINUA A RILEVARE</string>
+    <string name="rilevazioneInCorsoBtn">STO RILEVANDO…</string>
+    <string name="bucheRilevate">BUCHE RILEVATE</string>
+    <string name="posizioneBuca">Posizione della buca:</string>
+    <string name="profonditaBuca">Profondità della buca:</string>
+    <string name="centimetri">cm</string>
+    <string name="chilometri">KM</string>
+    <string name="vediSuMappa">Vedi su mappa</string>
+    <string name="vediTuttoSuMappa">Vedi tutte le buche su mappa</string>
+    <string name="raggioBuche">BUCHE RILEVATE NEL RAGGIO DI</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="insert_username">Inserisci il tuo username</string>
+    <string name="continue_button">Salva username</string>
+</resources>
