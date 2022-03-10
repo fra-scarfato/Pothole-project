@@ -136,17 +136,14 @@ public class DetectHoleFragment extends Fragment implements SensorEventListener 
                             sendHolePosition((y - limit), currentLocation);
                             try {
                                 addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
+                                hole = new Hole(addresses.get(0).getAddressLine(0), y - limit);
+                                holeArrayList.add(hole);
+                                RecyclerAdapter recyclerAdapter = new RecyclerAdapter(holeArrayList);
+                                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                                recyclerView.setAdapter(recyclerAdapter);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            hole = new Hole(addresses.get(0).getAddressLine(0), y - limit);
-                            holeArrayList.add(hole);
-                            RecyclerAdapter recyclerAdapter = new RecyclerAdapter(holeArrayList);
-                            recyclerView.setItemAnimator(new DefaultItemAnimator());
-                            recyclerView.setAdapter(recyclerAdapter);
-
-
-
 
                         } else {
                             Toast.makeText(getContext(), "Location null", Toast.LENGTH_SHORT).show();

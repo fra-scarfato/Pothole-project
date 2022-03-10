@@ -106,7 +106,7 @@ public class ViewHolesThread implements Runnable{
         Intent intent = new Intent(context, MapsActivity.class);
         intent.putParcelableArrayListExtra("hole",(ArrayList<? extends Parcelable>) holeArrayList);
         try {
-            Thread.sleep(2000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
